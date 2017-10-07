@@ -5,7 +5,8 @@ use std::process::exit;
 use std::process::Command;
 
 use tongue::parser;
-    
+use tongue::exec;
+
 fn main() {
     tongue_main()
 }
@@ -26,13 +27,8 @@ fn tongue_main() {
 	}
 	 
 
-        parse();
+        parser::parse();
+
+        exec::exec();
     }
-}
-
-fn parse() {
-    eval();
-}
-
-fn eval() {
 }
