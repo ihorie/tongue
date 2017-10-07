@@ -1,9 +1,11 @@
+extern crate tongue;
+
 use std::io::{self, Write};
 use std::process::exit;
 use std::process::Command;
 
-use parser;
-
+use tongue::parser;
+    
 fn main() {
     tongue_main()
 }
