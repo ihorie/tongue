@@ -2,7 +2,8 @@ use std::io::{self, Write};
 use std::process::exit;
 use std::process::Command;
 
-pub use 
+use parser;
+
 fn main() {
     tongue_main()
 }
