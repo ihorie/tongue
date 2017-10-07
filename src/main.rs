@@ -2,7 +2,6 @@ extern crate tongue;
 
 use std::io::{self, Write};
 use std::process::exit;
-use std::process::Command;
 
 use tongue::parser;
 use tongue::exec;
