@@ -5,6 +5,9 @@ authors = [ "Issei Horie <horie7188@gmail.com>" ]
 description = """
 Yet another shell.
 """
+documentation = "https://github.com/ihorie/tongue"
+homepage = "https://github.com/ihorie/tongue"
+repository = "https://github.com/ihorie/tongue"
 exclude = [
     "tests/*",
     "benches/*",
