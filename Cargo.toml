@@ -2,10 +2,15 @@
 name = "tongue"
 version = "0.0.1"
 authors = [ "Issei Horie <horie7188@gmail.com>" ]
+description = """
+Yet another shell.
+"""
 exclude = [
     "tests/*",
     "benches/*",
 ]
+
+
 
 [dependencies]
 libc = "0.2"
