@@ -6,13 +6,11 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-// use std::process::Command;
+use std::process::Command;
 
-pub fn exec() {
-
+pub fn exec(token: &str) {
 //    Command::new("ls")
-//        .arg("-l")
-//        .arg("-a")
-//        .spawn()
-//        .expect("ls command failed to start");
+    Command::new(token)
+        .status()
+        .expect("command failed to start");
 }

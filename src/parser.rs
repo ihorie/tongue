@@ -1,2 +1,3 @@
-pub fn parse() {
+pub fn parse(buf: &str) -> &str {
+    buf
 }

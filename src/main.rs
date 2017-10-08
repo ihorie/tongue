@@ -11,23 +11,23 @@ fn main() {
 }
 
 fn tongue_main() {
+
     loop {
-        print!(" ¥ ");
-	io::stdout().flush().unwrap();
+        print!(" ¥ ");  
+        io::stdout().flush().unwrap();
 
         let mut buf = String::new();
-
         io::stdin().read_line(&mut buf)
-	    .expect("Failed to read line");
-
+            .expect("Failed to read line");
         if "".eq(&buf) {
-	    println!("");
-	    exit(0);
-	}
-	 
+            println!("");
+            exit(0);
+        }
 
-        parser::parse();
+        parser::parse(&buf);
 
-        exec::exec();
+        exec::exec(&buf.trim());
+        io::stdout().flush().unwrap();
     }
 }
+
