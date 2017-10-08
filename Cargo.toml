@@ -2,6 +2,7 @@
 name = "tongue"
 version = "0.0.1"
 authors = [ "Issei Horie <horie7188@gmail.com>" ]
+license = "MIT/Apache-2.0"
 description = """
 Yet another shell.
 """
