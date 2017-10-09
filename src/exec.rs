@@ -23,6 +23,8 @@ pub fn exec(token: &str) {
         builtin::exit();
     } else if token == "export" {
         builtin::export();
+    } else if token == "return" {
+        builtin::_return();
     } else {
         Command::new(token)
             .status()
