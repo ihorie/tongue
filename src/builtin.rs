@@ -17,7 +17,11 @@ pub fn cd() {
 }
 
 pub fn _continue() {
-    
+  
+}
+
+pub fn exec() {
+
 }
 
 pub fn exit() {
