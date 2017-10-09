@@ -2,6 +2,10 @@ use std::env;
 use std::path::Path;
 use std::process;
 
+pub fn _break() {
+    
+}
+
 pub fn cd() {
     let home = match env::var("HOME") {
         Ok(home) => home,

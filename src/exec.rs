@@ -11,7 +11,9 @@ use std::process::Command;
 use builtin;
 
 pub fn exec(token: &str) {
-    if token == "cd" {
+    if token == "break" {
+        builtin::_break();
+    } else if token == "cd" {
         builtin::cd();
     } else if token == "exit" {
         builtin::exit();
