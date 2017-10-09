@@ -15,6 +15,8 @@ pub fn exec(token: &str) {
         builtin::cd();
     } else if token == "exit" {
         builtin::exit();
+    } else if token == "export" {
+        builtin::export();
     } else {
         Command::new(token)
             .status()
