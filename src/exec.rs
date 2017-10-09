@@ -13,6 +13,8 @@ use builtin;
 pub fn exec(token: &str) {
     if token == "cd" {
         builtin::cd();
+    } else if token == "exit" {
+        builtin::exit();
     } else {
         Command::new(token)
             .status()
