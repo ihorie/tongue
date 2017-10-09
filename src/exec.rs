@@ -15,6 +15,8 @@ pub fn exec(token: &str) {
         builtin::_break();
     } else if token == "cd" {
         builtin::cd();
+    } else if token == "continue" {
+        builtin::_continue();
     } else if token == "exit" {
         builtin::exit();
     } else if token == "export" {

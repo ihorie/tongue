@@ -16,6 +16,10 @@ pub fn cd() {
     env::set_current_dir(&path).is_ok();
 }
 
+pub fn _continue() {
+    
+}
+
 pub fn exit() {
     process::exit(0);
 }
