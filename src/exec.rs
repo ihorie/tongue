@@ -8,9 +8,14 @@
 
 use std::process::Command;
 
+use builtin;
+
 pub fn exec(token: &str) {
-//    Command::new("ls")
-    Command::new(token)
-        .status()
-        .expect("command failed to start");
+    if token == "cd" {
+        builtin::cd();
+    } else {
+        Command::new(token)
+            .status()
+            .expect("command failed to start");
+    }
 }
