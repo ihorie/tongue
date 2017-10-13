@@ -24,9 +24,9 @@ fn tongue_main() {
             exit(0);
         }
 
-        parser::parse(&buf);
+        let v = parser::parse(&buf);
 
-        exec::exec(&buf.trim());
+        exec::exec(v);
         io::stdout().flush().unwrap();
     }
 }

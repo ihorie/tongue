@@ -10,26 +10,35 @@ use std::process::Command;
 
 use builtin;
 
-pub fn exec(token: &str) {
-    if token == "." {
+pub fn exec(tokens: Vec<String>) {
+    if tokens[0] == "." {
         builtin::dot();
-    } else if token == "break" {
+    } else if tokens[0] == "break" {
         builtin::_break();
-    } else if token == "cd" {
+    } else if tokens[0] == "cd" {
         builtin::cd();
-    } else if token == "continue" {
+    } else if tokens[0] == "continue" {
         builtin::_continue();
-    } else if token == "exec" {
+    } else if tokens[0] == "exec" {
         builtin::exec();
-    } else if token == "exit" {
+    } else if tokens[0] == "exit" {
         builtin::exit();
-    } else if token == "export" {
+    } else if tokens[0] == "export" {
         builtin::export();
-    } else if token == "return" {
+    } else if tokens[0] == "return" {
         builtin::_return();
     } else {
-        Command::new(token)
-            .status()
-            .expect("command failed to start");
+        if let Some((command, options)) = tokens.split_first() {
+            if options.is_empty() {
+                Command::new(command)
+                    .status()
+                    .expect("command failed to start");
+            } else {
+                Command::new(command)
+                    .args(options)
+                    .status()
+                    .expect("command failed to start");
+            }
+        }
     }
 }
