@@ -15,8 +15,6 @@ pub fn parse(buf: &str) -> Vec<String> {
             token.push(c);
         }
     }
-
-    println!("{}", v[0]); 
     
     v
 }
