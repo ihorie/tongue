@@ -2,6 +2,7 @@ extern crate tongue;
 
 use std::io::{self, Write};
 use std::process::exit;
+use std::env;
 
 use tongue::parser;
 use tongue::exec;
@@ -11,7 +12,13 @@ fn main() {
 }
 
 fn tongue_main() {
-
+    
+    for argument in env::args() {
+        if argument == "--help" {
+            println!("tongue [option]");
+        }
+    }
+    
     loop {
         print!(" ¥ ");  
         io::stdout().flush().unwrap();
