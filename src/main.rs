@@ -16,6 +16,10 @@ fn tongue_main() {
     for argument in env::args() {
         if argument == "--help" {
             println!("tongue [option]");
+            exit(0);
+        } else if argument == "--version" {
+            println!("{}", env!("CARGO_PKG_VERSION"));
+            exit(0);
         }
     }
     
