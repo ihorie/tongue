@@ -16,7 +16,7 @@ pub fn exec(tokens: Vec<String>) {
     } else if tokens[0] == "break" {
         builtin::_break();
     } else if tokens[0] == "cd" {
-        builtin::cd();
+        builtin::cd(tokens);
     } else if tokens[0] == "continue" {
         builtin::_continue();
     } else if tokens[0] == "exec" {
