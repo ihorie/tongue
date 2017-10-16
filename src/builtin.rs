@@ -6,6 +6,9 @@ pub fn dot() {
 
 }
 
+pub fn alias() {
+}
+
 pub fn _break() {
     
 }
