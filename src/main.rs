@@ -3,6 +3,7 @@ extern crate tongue;
 use std::io::{self, Write};
 use std::process::exit;
 use std::env;
+use std::fs::File;
 
 use tongue::parser;
 use tongue::exec;
@@ -22,7 +23,17 @@ fn tongue_main() {
             exit(0);
         }
     }
-    
+
+    read_from_file("~/.tonguerc");
+
+    read_from_stdin();
+}
+
+fn read_from_file(path: &str) {
+    let mut file = File::open(path);
+}
+
+fn read_from_stdin() {
     loop {
         print!(" ¥ ");  
         io::stdout().flush().unwrap();
