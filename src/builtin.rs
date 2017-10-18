@@ -6,7 +6,13 @@ pub fn dot() {
 
 }
 
-pub fn alias() {
+pub fn alias(tokens: Vec<String>) {
+    if let Some((command, options)) = tokens.split_first() {
+        if options.is_empty() {
+            
+        } else {
+        }
+    }
 }
 
 pub fn _break() {

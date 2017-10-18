@@ -13,6 +13,8 @@ use builtin;
 pub fn exec(tokens: Vec<String>) {
     if tokens[0] == "." {
         builtin::dot();
+    } else if tokens[0] == "alias" {
+        builtin::alias(tokens);
     } else if tokens[0] == "break" {
         builtin::_break();
     } else if tokens[0] == "cd" {
