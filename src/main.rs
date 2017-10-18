@@ -1,6 +1,8 @@
 extern crate tongue;
 
 use std::io::{self, Write};
+use std::io::BufReader;
+use std::io::BufRead;
 use std::process::exit;
 use std::env;
 use std::fs::File;
@@ -24,13 +26,27 @@ fn tongue_main() {
         }
     }
 
-    read_from_file("~/.tonguerc");
+    let home = match env::var("HOME") {
+        Ok(home) => home,
+        Err(e)   => e.to_string(),
+    };
+    
+    read_from_file(home + &"/.tonguerc");
 
     read_from_stdin();
 }
 
-fn read_from_file(path: &str) {
-    let mut file = File::open(path);
+fn read_from_file(path: String) {
+    let file = File::open(path).expect("file not found");
+
+    let reader = BufReader::new(file);
+
+    for buf in reader.lines() {
+        let v = parser::parse(&buf.expect("Failed to read file"));
+
+        exec::exec(v);
+        io::stdout().flush().unwrap();
+    }
 }
 
 fn read_from_stdin() {
