@@ -17,7 +17,7 @@ fn main() {
 }
 
 fn tongue_main() {
-    let mut config = Config {
+    let mut config = &mut Config {
         aliases: HashMap::new(),
         home : match env::var("HOME") {
             Ok(home) => home,
@@ -35,16 +35,17 @@ fn tongue_main() {
         }
     }
 
-    read_rc(&config);
+    read_rc(config);
 
-    read_from_stdin(&config);
+    read_from_stdin(config);
 }
 
-fn read_rc(config: &Config) {
-    read_from_file("/.tonguerc".to_string(), &config);
+
+fn read_rc(config: &mut Config) {
+    read_from_file("/.tonguerc".to_string(), config);
 }
 
-fn read_from_file(path: String, config: &Config) {
+fn read_from_file(path: String, config: &mut Config) {
     
     let file = File::open(config.home.clone() + &path).expect("file not found");
 
@@ -53,14 +54,14 @@ fn read_from_file(path: String, config: &Config) {
     for buf in reader.lines() {
         let v = parser::parse(&buf.expect("Failed to read file"), &config);
 
-        exec::exec(v);
-
+        exec::exec(v, config);
+        
         io::stdout().flush().unwrap();
     }
 
 }
 
-fn read_from_stdin(config: &Config) {
+fn read_from_stdin(config: &mut Config) {
     loop {
         print!(" ¥ ");
 
@@ -78,7 +79,7 @@ fn read_from_stdin(config: &Config) {
 
         let v = parser::parse(&buf, &config);
 
-        exec::exec(v);
+        exec::exec(v, config);
 
         io::stdout().flush().unwrap();
     }

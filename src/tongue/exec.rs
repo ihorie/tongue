@@ -9,12 +9,13 @@
 use std::process::Command;
 
 use tongue::builtin;
+use tongue::config::Config;
 
-pub fn exec(tokens: Vec<String>) {
+pub fn exec(tokens: Vec<String>, mut config: &mut Config) {
     if tokens[0] == "." {
         builtin::dot();
     } else if tokens[0] == "alias" {
-        builtin::alias(tokens);
+        builtin::alias(tokens, config);
     } else if tokens[0] == "break" {
         builtin::_break();
     } else if tokens[0] == "cd" {

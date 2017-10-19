@@ -2,18 +2,25 @@ use std::env;
 use std::path::Path;
 use std::process;
 
+use tongue::config::Config;
+
 pub fn dot() {
 
 }
 
-pub fn alias(tokens: Vec<String>) {
+pub fn alias(tokens: Vec<String>, mut config: &mut Config) {
     if let Some((command, options)) = tokens.split_first() {
         if options.is_empty() {
-            
+            for key in config.aliases.keys() {
+                match config.aliases.get(key) {
+                    Some(val) => println!("{} -> {}", key, val),
+                    None => print!(""),
+                }
+            }
         } else {
             let v: Vec<&str> = options[0].split('=').collect();
             
-//            aliases.insert(v[0], v[1]);
+            config.aliases.insert(v[0].to_string(), v[1].to_string());
         }
     }
 }
