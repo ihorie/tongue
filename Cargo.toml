@@ -16,3 +16,6 @@ exclude = [
 
 [dependencies]
 
+[[bin]]
+path = "src/main.rs"
+name = "tongue"

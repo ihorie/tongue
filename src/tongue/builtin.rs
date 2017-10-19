@@ -11,6 +11,9 @@ pub fn alias(tokens: Vec<String>) {
         if options.is_empty() {
             
         } else {
+            let v: Vec<&str> = options[0].split('=').collect();
+            
+//            aliases.insert(v[0], v[1]);
         }
     }
 }

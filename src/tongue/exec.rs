@@ -8,7 +8,7 @@
 
 use std::process::Command;
 
-use builtin;
+use tongue::builtin;
 
 pub fn exec(tokens: Vec<String>) {
     if tokens[0] == "." {

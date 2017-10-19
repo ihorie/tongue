@@ -6,16 +6,25 @@ use std::io::BufRead;
 use std::process::exit;
 use std::env;
 use std::fs::File;
+use std::collections::HashMap;
 
 use tongue::parser;
 use tongue::exec;
+use tongue::config::Config;
 
 fn main() {
-    tongue_main()
+    tongue_main();
 }
 
 fn tongue_main() {
-    
+    let mut config = Config {
+        aliases: HashMap::new(),
+        home : match env::var("HOME") {
+            Ok(home) => home,
+            Err(e) => e.to_string(),
+        },
+    };
+
     for argument in env::args() {
         if argument == "--help" {
             println!("tongue [option]");
@@ -26,46 +35,51 @@ fn tongue_main() {
         }
     }
 
-    let home = match env::var("HOME") {
-        Ok(home) => home,
-        Err(e)   => e.to_string(),
-    };
-    
-    read_from_file(home + &"/.tonguerc");
+    read_rc(&config);
 
-    read_from_stdin();
+    read_from_stdin(&config);
 }
 
-fn read_from_file(path: String) {
-    let file = File::open(path).expect("file not found");
+fn read_rc(config: &Config) {
+    read_from_file("/.tonguerc".to_string(), &config);
+}
+
+fn read_from_file(path: String, config: &Config) {
+    
+    let file = File::open(config.home.clone() + &path).expect("file not found");
 
     let reader = BufReader::new(file);
 
     for buf in reader.lines() {
-        let v = parser::parse(&buf.expect("Failed to read file"));
+        let v = parser::parse(&buf.expect("Failed to read file"), &config);
 
         exec::exec(v);
+
         io::stdout().flush().unwrap();
     }
+
 }
 
-fn read_from_stdin() {
+fn read_from_stdin(config: &Config) {
     loop {
-        print!(" ¥ ");  
+        print!(" ¥ ");
+
         io::stdout().flush().unwrap();
 
         let mut buf = String::new();
+
         io::stdin().read_line(&mut buf)
             .expect("Failed to read line");
+
         if "".eq(&buf) {
             println!("");
             exit(0);
         }
 
-        let v = parser::parse(&buf);
+        let v = parser::parse(&buf, &config);
 
         exec::exec(v);
+
         io::stdout().flush().unwrap();
     }
 }
-

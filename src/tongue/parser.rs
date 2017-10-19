@@ -1,5 +1,8 @@
-pub fn parse(buf: &str) -> Vec<String> {
+use std::collections::HashMap;
 
+use tongue::config::Config;
+
+pub fn parse(buf: &str, config: &Config) -> Vec<String> {
     let mut token: String = String::from("");
 
     let mut v: Vec<String> = Vec::new();
