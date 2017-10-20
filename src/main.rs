@@ -50,9 +50,9 @@ fn read_from_file(path: String, config: &mut Config) {
     let reader = BufReader::new(file);
 
     for buf in reader.lines() {
-        let v = parser::parse(&buf.expect("Failed to read file"), &config);
+        let tokens = parser::parse(&buf.expect("Failed to read file"), &config);
 
-        exec::exec(v, config);
+        exec::exec(tokens, config);
         
         io::stdout().flush().unwrap();
     }
