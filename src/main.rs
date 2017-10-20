@@ -1,8 +1,6 @@
 extern crate tongue;
 
-use std::io::{self, Write};
-use std::io::BufReader;
-use std::io::BufRead;
+use std::io::{self, Write, BufReader, BufRead};
 use std::process::exit;
 use std::env;
 use std::fs::File;
