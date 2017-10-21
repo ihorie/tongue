@@ -6,24 +6,36 @@ pub fn parse(buf: &str, config: &Config) -> Vec<String> {
     let mut token: String = String::from("");
 
     let mut v: Vec<String> = Vec::new();
+
+    let mut is_str = false;
     
     for c in buf.chars() {
         if c == ' ' {
-            println!("{}", token);
-            v.push(token.clone());
-            token = String::from("");
-//        } else if c == '"' {
-//            continue;
+            if is_str {
+                token.push(c);
+            } else {
+                 v.push(token.clone());
+                token = String::from("");
+            }
+        } else if c == '"' {
+            if is_str {
+                is_str = false;
+            } else {
+                is_str = true;
+            }
         } else if c == '=' {
-            v.push(token.clone());
-            token = String::from("");
+            token.push(c);
         } else if c == '\n' {
             v.push(token.clone());
             token = String::from("");
         } else {
             token.push(c);
-            //token = String::from("");
         }
+    }
+
+    if token.is_empty() {
+    } else {
+        v.push(token.clone());
     }
     
     v

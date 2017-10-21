@@ -18,7 +18,7 @@ pub fn alias(tokens: Vec<String>, mut config: &mut Config) {
                 }
             }
         } else {
-            config.aliases.insert(tokens[1].to_string(), tokens[2].to_string());
+            config.aliases.insert(tokens[1].to_string(), tokens[3].to_string());
         }
     }
 }
