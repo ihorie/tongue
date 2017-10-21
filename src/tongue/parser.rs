@@ -9,6 +9,12 @@ pub fn parse(buf: &str, config: &Config) -> Vec<String> {
     
     for c in buf.chars() {
         if c == ' ' {
+            println!("{}", token);
+            v.push(token.clone());
+            token = String::from("");
+//        } else if c == '"' {
+//            continue;
+        } else if c == '=' {
             v.push(token.clone());
             token = String::from("");
         } else if c == '\n' {
@@ -16,6 +22,7 @@ pub fn parse(buf: &str, config: &Config) -> Vec<String> {
             token = String::from("");
         } else {
             token.push(c);
+            //token = String::from("");
         }
     }
     
