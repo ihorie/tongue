@@ -37,6 +37,6 @@ pub fn parse(input: &str, config: &Config) -> Vec<String> {
     } else {
         v.push(token.clone());
     }
-    
+
     v
 }
