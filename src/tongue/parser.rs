@@ -57,7 +57,14 @@ pub fn parse(input: &str, config: &Config) -> Vec<String> {
                         }
                         token = String::from("");
                         is_string = true;
-                    }
+                    },
+                    '\n' => {
+                        if token.is_empty() == false {
+                            v.push(token);
+                        }
+                        token = String::from("");
+                        break;
+                    },
                     _ => token.push(c),
                 }
             },
@@ -98,6 +105,16 @@ fn parse_one_token() {
         };
         let expected: Vec<String> = vec!["cd".to_string()];
         let got = parse("cd", &config);
+        assert_eq!(got, expected);
+    }
+
+    {
+        let config = &mut Config {
+            aliases: HashMap::new(),
+            home : "HOME".to_string(),
+        };
+        let expected: Vec<String> = vec!["ls".to_string()];
+        let got = parse("ls\n", &config);
         assert_eq!(got, expected);
     }
 }
