@@ -2,14 +2,14 @@ use std::collections::HashMap;
 
 use tongue::config::Config;
 
-pub fn parse(buf: &str, config: &Config) -> Vec<String> {
+pub fn parse(input: &str, config: &Config) -> Vec<String> {
     let mut token: String = String::from("");
 
     let mut v: Vec<String> = Vec::new();
 
     let mut is_str = false;
     
-    for c in buf.chars() {
+    for c in input.chars() {
         if c == ' ' {
             if is_str {
                 token.push(c);
