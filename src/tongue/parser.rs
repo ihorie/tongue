@@ -93,3 +93,14 @@ fn parse_two_token() {
     let got = parse("cd directory");
     assert_eq!(got, expected);
 }
+
+#[test]
+fn parse_three_token() {
+    let expected: Vec<String> = vec![
+        "ls".to_string(),
+        "-l".to_string(),
+        "directory".to_string(),
+    ];
+    let got = parse("ls -l directory");
+    assert_eq!(got, expected);
+}
