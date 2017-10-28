@@ -76,6 +76,8 @@ pub fn parse(input: &str, config: &Config) -> Vec<String> {
 
 #[test]
 fn parse_empty() {
+    use std::collections::HashMap;
+
     let config = &mut Config {
         aliases: HashMap::new(),
         home : "HOME".to_string(),
@@ -87,17 +89,23 @@ fn parse_empty() {
 
 #[test]
 fn parse_one_token() {
-    let config = &mut Config {
-        aliases: HashMap::new(),
-        home : "HOME".to_string(),
-    };
-    let expected: Vec<String> = vec!["cd".to_string()];
-    let got = parse("cd", &config);
-    assert_eq!(got, expected);
+    use std::collections::HashMap;
+
+    {
+        let config = &mut Config {
+            aliases: HashMap::new(),
+            home : "HOME".to_string(),
+        };
+        let expected: Vec<String> = vec!["cd".to_string()];
+        let got = parse("cd", &config);
+        assert_eq!(got, expected);
+    }
 }
 
 #[test]
 fn parse_two_token() {
+    use std::collections::HashMap;
+
     let config = &mut Config {
         aliases: HashMap::new(),
         home : "HOME".to_string(),
@@ -109,6 +117,8 @@ fn parse_two_token() {
 
 #[test]
 fn parse_three_token() {
+    use std::collections::HashMap;
+
     {
         let config = &mut Config {
             aliases: HashMap::new(),
@@ -127,6 +137,8 @@ fn parse_three_token() {
 
 #[test]
 fn parse_four_token() {
+    use std::collections::HashMap;
+
     {
         let config = &mut Config {
             aliases: HashMap::new(),
