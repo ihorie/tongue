@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use tongue::config::Config;
 
-pub fn parse(input: &str, config: &Config) -> Vec<String> {
+pub fn parse_old(input: &str, config: &Config) -> Vec<String> {
     let mut token: String = String::from("");
 
     let mut v: Vec<String> = Vec::new();
@@ -39,4 +39,47 @@ pub fn parse(input: &str, config: &Config) -> Vec<String> {
     }
 
     v
+}
+
+pub fn parse(input: &str) -> Vec<String> {
+    let mut token: String = String::from("");
+    
+    let mut v: Vec<String> = Vec::new();
+
+    let mut chars = input.chars();
+
+    loop {
+        match chars.next() {
+            Some(c) => {token.push(c)},
+            None => {
+                if token.is_empty() == false {
+                    v.push(token);
+                }
+                break;
+            }
+            _ => break,
+        }
+    }
+    
+    v
+}
+
+#[test]
+fn parse_empty() {
+    let expected: Vec<String> = Vec::new();
+    let got = parse("");
+    assert_eq!(got, expected);
+}
+
+#[test]
+fn parse_one_token() {
+    let expected: Vec<String> = vec!["cd".to_string()];
+    let got = parse("cd");
+    assert_eq!(got, expected);
+}
+
+#[test]
+fn parse_two_token() {
+    let expected: Vec<String> = vec!["cd".to_string(), "directory".to_string]
+    let got = parse("cd directory");
 }
