@@ -50,13 +50,22 @@ pub fn parse(input: &str) -> Vec<String> {
 
     loop {
         match chars.next() {
-            Some(c) => {token.push(c)},
+            Some(c) => {
+                match c {
+                    ' ' => {
+                        v.push(token);
+                        token = String::from("");
+                    },
+                    _ => token.push(c),
+                }
+
+            },
             None => {
                 if token.is_empty() == false {
                     v.push(token);
                 }
                 break;
-            }
+            },
             _ => break,
         }
     }
@@ -82,4 +91,5 @@ fn parse_one_token() {
 fn parse_two_token() {
     let expected: Vec<String> = vec!["cd".to_string(), "directory".to_string()];
     let got = parse("cd directory");
+    assert_eq!(got, expected);
 }
