@@ -48,17 +48,57 @@ pub fn parse(input: &str) -> Vec<String> {
 
     let mut chars = input.chars();
 
+    let mut is_string = false;
+    
     loop {
-        match chars.next() {
+        if is_string == true {
+            match chars.next() {
+                Some(c)  => {
+                    match c {
+                        '"' => {
+                            if token.is_empty() == false {
+                                v.push(token);
+                            }
+                            token = String::from("");
+                            is_string = false;
+                        },
+                        _ => {
+                            token.push(c);
+                        }
+                    };
+                },
+                None => {
+                    break;
+                },
+            };
+            continue;
+        }
+        match chars.next() {            
             Some(c) => {
                 match c {
                     ' ' => {
+                        if token.is_empty() == false {
+                            v.push(token);
+                        }
+                        token = String::from("");
+                    },
+                    '=' => {
+                        if token.is_empty() == false {
+                            v.push(token);
+                        }
+                        token = String::from("=");
                         v.push(token);
                         token = String::from("");
                     },
+                    '"' => {
+                        if token.is_empty() == false {
+                            v.push(token);
+                        }
+                        token = String::from("");
+                        is_string = true;
+                    }
                     _ => token.push(c),
                 }
-
             },
             None => {
                 if token.is_empty() == false {
@@ -72,6 +112,7 @@ pub fn parse(input: &str) -> Vec<String> {
     
     v
 }
+
 
 #[test]
 fn parse_empty() {
@@ -96,11 +137,28 @@ fn parse_two_token() {
 
 #[test]
 fn parse_three_token() {
-    let expected: Vec<String> = vec![
-        "ls".to_string(),
-        "-l".to_string(),
-        "directory".to_string(),
-    ];
-    let got = parse("ls -l directory");
-    assert_eq!(got, expected);
+    {    
+        let expected: Vec<String> = vec![
+            "ls".to_string(),
+            "-l".to_string(),
+            "directory".to_string(),
+        ];
+        let got = parse("ls -l directory");
+        assert_eq!(got, expected);
+    }
+
+}
+
+#[test]
+fn parse_four_token() {
+    {
+        let expected: Vec<String> = vec![
+            "alias".to_string(),
+            "emacs".to_string(),
+            "=".to_string(),
+            "emacs -nw".to_string()
+        ];
+        let got = parse("alias emacs = \"emacs -nw\"");
+        assert_eq!(got, expected);
+    }
 }
