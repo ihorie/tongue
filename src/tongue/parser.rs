@@ -80,6 +80,6 @@ fn parse_one_token() {
 
 #[test]
 fn parse_two_token() {
-    let expected: Vec<String> = vec!["cd".to_string(), "directory".to_string]
+    let expected: Vec<String> = vec!["cd".to_string(), "directory".to_string()];
     let got = parse("cd directory");
 }
