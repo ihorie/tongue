@@ -45,45 +45,29 @@ fn read_rc(config: &mut Config) {
 }
 
 fn read_from_file(path: String, config: &mut Config) {
-    
     let file = File::open(config.home.clone() + &path).expect("file not found");
-
     let reader = BufReader::new(file);
-
     for buf in reader.lines() {
         let tokens = lexer::tokenize(&buf.expect("Failed to read file"), &config);
-
-        //parser::parse(tokens.clone());
-        
-        exec::exec(tokens, config);
-        
+        let tree = parser::parse(tokens.clone());
+        exec::exec(tree, config);
         io::stdout().flush().unwrap();
     }
-
 }
 
 fn read_from_stdin(config: &mut Config) {
     loop {
         print!(" ¥ ");
-
         io::stdout().flush().unwrap();
-
         let mut buf = String::new();
-
-        io::stdin().read_line(&mut buf)
-            .expect("Failed to read line");
-
+        io::stdin().read_line(&mut buf).expect("Failed to read line");
         if "".eq(&buf) {
             println!("");
             exit(0);
         }
-
         let tokens = lexer::tokenize(&buf, &config);
-
-        //parser::parse(tokens.clone());
-        
-        exec::exec(tokens, config);
-
+        let tree =  parser::parse(tokens.clone());
+        exec::exec(tree, config);
         io::stdout().flush().unwrap();
     }
 }

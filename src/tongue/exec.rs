@@ -10,7 +10,11 @@ use std::process::Command;
 
 use tongue::builtin;
 use tongue::config::Config;
+use tongue::node::Node;
 
+pub fn exec(tree: Node, mut config: &mut Config) {
+}
+/*
 pub fn exec(tokens: Vec<String>, mut config: &mut Config) {
     if tokens[0] == "." {
         builtin::dot();
@@ -45,3 +49,4 @@ pub fn exec(tokens: Vec<String>, mut config: &mut Config) {
         }
     }
 }
+*/
