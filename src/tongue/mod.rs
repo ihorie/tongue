@@ -3,7 +3,7 @@ pub mod node;
 pub mod builtin;
 pub mod lexer;
 pub mod parser;
-pub mod exec;
+pub mod evaluator;
 
 pub use self::config::Config;
 pub use self::node::Node;

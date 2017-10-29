@@ -8,7 +8,7 @@ use std::collections::HashMap;
 
 use tongue::lexer;
 use tongue::parser;
-use tongue::exec;
+use tongue::evaluator;
 use tongue::config::Config;
 
 fn main() {
@@ -50,7 +50,7 @@ fn read_from_file(path: String, config: &mut Config) {
     for buf in reader.lines() {
         let tokens = lexer::tokenize(&buf.expect("Failed to read file"), &config);
         let tree = parser::parse(tokens.clone());
-        exec::exec(tree, config);
+        evaluator::eval(tree, config);
         io::stdout().flush().unwrap();
     }
 }
@@ -67,7 +67,7 @@ fn read_from_stdin(config: &mut Config) {
         }
         let tokens = lexer::tokenize(&buf, &config);
         let tree =  parser::parse(tokens.clone());
-        exec::exec(tree, config);
+        evaluator::eval(tree, config);
         io::stdout().flush().unwrap();
     }
 }

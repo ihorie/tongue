@@ -7,4 +7,4 @@ pub use tongue::config;
 pub use tongue::node;
 pub use tongue::lexer;
 pub use tongue::parser;
-pub use tongue::exec;
+pub use tongue::evaluator;
