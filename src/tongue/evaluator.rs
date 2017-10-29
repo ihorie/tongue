@@ -12,11 +12,12 @@ use tongue::builtin;
 use tongue::config::Config;
 use tongue::node::Node;
 
-pub fn exec(tree: Node, mut config: &mut Config) {
+pub fn eval(tree: Node, mut config: &mut Config) {
     if tree.v.is_empty() {
         return;
     }
 
+    
     if tree.v == "." {
         builtin::dot();
     } else if tree.v == "alias" {
