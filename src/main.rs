@@ -53,7 +53,7 @@ fn read_from_file(path: String, config: &mut Config) {
     for buf in reader.lines() {
         let tokens = lexer::tokenize(&buf.expect("Failed to read file"), &config);
 
-        parser::parse(tokens.clone());
+        //parser::parse(tokens.clone());
         
         exec::exec(tokens, config);
         
@@ -80,7 +80,7 @@ fn read_from_stdin(config: &mut Config) {
 
         let tokens = lexer::tokenize(&buf, &config);
 
-        parser::parse(tokens.clone());
+        //parser::parse(tokens.clone());
         
         exec::exec(tokens, config);
 
