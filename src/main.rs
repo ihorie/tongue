@@ -6,6 +6,7 @@ use std::env;
 use std::fs::File;
 use std::collections::HashMap;
 
+use tongue::lexer;
 use tongue::parser;
 use tongue::exec;
 use tongue::config::Config;
@@ -50,8 +51,10 @@ fn read_from_file(path: String, config: &mut Config) {
     let reader = BufReader::new(file);
 
     for buf in reader.lines() {
-        let tokens = parser::parse(&buf.expect("Failed to read file"), &config);
+        let tokens = lexer::tokenize(&buf.expect("Failed to read file"), &config);
 
+        parser::parse(tokens.clone());
+        
         exec::exec(tokens, config);
         
         io::stdout().flush().unwrap();
@@ -75,9 +78,11 @@ fn read_from_stdin(config: &mut Config) {
             exit(0);
         }
 
-        let v = parser::parse(&buf, &config);
+        let tokens = lexer::tokenize(&buf, &config);
 
-        exec::exec(v, config);
+        parser::parse(tokens.clone());
+        
+        exec::exec(tokens, config);
 
         io::stdout().flush().unwrap();
     }

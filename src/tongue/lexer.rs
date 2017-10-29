@@ -1,6 +1,6 @@
 use tongue::config::Config;
 
-pub fn parse(input: &str, config: &Config) -> Vec<String> {
+pub fn tokenize(input: &str, config: &Config) -> Vec<String> {
     debug!("{}", input);
     
     let mut token: String = String::from("");
@@ -82,7 +82,7 @@ pub fn parse(input: &str, config: &Config) -> Vec<String> {
 
 
 #[test]
-fn parse_empty() {
+fn tokenize_empty() {
     use std::collections::HashMap;
 
     let config = &mut Config {
@@ -90,12 +90,12 @@ fn parse_empty() {
         home : "HOME".to_string(),
     };
     let expected: Vec<String> = Vec::new();
-    let got = parse("", &config);
+    let got = tokenize("", &config);
     assert_eq!(got, expected);
 }
 
 #[test]
-fn parse_one_token() {
+fn tokenize_one_token() {
     use std::collections::HashMap;
 
     {
@@ -104,7 +104,7 @@ fn parse_one_token() {
             home : "HOME".to_string(),
         };
         let expected: Vec<String> = vec!["cd".to_string()];
-        let got = parse("cd", &config);
+        let got = tokenize("cd", &config);
         assert_eq!(got, expected);
     }
 
@@ -114,13 +114,13 @@ fn parse_one_token() {
             home : "HOME".to_string(),
         };
         let expected: Vec<String> = vec!["ls".to_string()];
-        let got = parse("ls\n", &config);
+        let got = tokenize("ls\n", &config);
         assert_eq!(got, expected);
     }
 }
 
 #[test]
-fn parse_two_token() {
+fn tokenize_two_token() {
     use std::collections::HashMap;
 
     let config = &mut Config {
@@ -128,12 +128,12 @@ fn parse_two_token() {
         home : "HOME".to_string(),
     };
     let expected: Vec<String> = vec!["cd".to_string(), "directory".to_string()];
-    let got = parse("cd directory", &config);
+    let got = tokenize("cd directory", &config);
     assert_eq!(got, expected);
 }
 
 #[test]
-fn parse_three_token() {
+fn tokenize_three_token() {
     use std::collections::HashMap;
 
     {
@@ -146,7 +146,7 @@ fn parse_three_token() {
             "-l".to_string(),
             "directory".to_string(),
         ];
-        let got = parse("ls -l directory", &config);
+        let got = tokenize("ls -l directory", &config);
         assert_eq!(got, expected);
     }
 
@@ -160,13 +160,13 @@ fn parse_three_token() {
             "=".to_string(),
             ">".to_string(),
         ];
-        let got = parse("PS1 = \">\"", &config);
+        let got = tokenize("PS1 = \">\"", &config);
         assert_eq!(got, expected);
     }
 }
 
 #[test]
-fn parse_four_token() {
+fn tokenize_four_token() {
     use std::collections::HashMap;
 
     {
@@ -180,7 +180,7 @@ fn parse_four_token() {
             "=".to_string(),
             "emacs -nw".to_string()
         ];
-        let got = parse("alias emacs = \"emacs -nw\"", &config);
+        let got = tokenize("alias emacs = \"emacs -nw\"", &config);
         assert_eq!(got, expected);
     }
 }
