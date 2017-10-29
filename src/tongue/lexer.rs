@@ -62,7 +62,6 @@ pub fn tokenize(input: &str, config: &Config) -> Vec<String> {
                         if token.is_empty() == false {
                             v.push(token);
                         }
-                        token = String::from("");
                         break;
                     },
                     _ => token.push(c),

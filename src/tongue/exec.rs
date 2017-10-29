@@ -13,40 +13,31 @@ use tongue::config::Config;
 use tongue::node::Node;
 
 pub fn exec(tree: Node, mut config: &mut Config) {
-}
-/*
-pub fn exec(tokens: Vec<String>, mut config: &mut Config) {
-    if tokens[0] == "." {
-        builtin::dot();
-    } else if tokens[0] == "alias" {
-        builtin::alias(tokens, config);
-    } else if tokens[0] == "break" {
-        builtin::_break();
-    } else if tokens[0] == "cd" {
-        builtin::cd(tokens);
-    } else if tokens[0] == "continue" {
-        builtin::_continue();
-    } else if tokens[0] == "exec" {
-        builtin::exec();
-    } else if tokens[0] == "exit" {
-        builtin::exit();
-    } else if tokens[0] == "export" {
-        builtin::export();
-    } else if tokens[0] == "return" {
-        builtin::_return();
-    } else {
-        if let Some((command, options)) = tokens.split_first() {
-            if options.is_empty() {
-                Command::new(command)
-                    .status()
-                    .expect("command failed to start");
-            } else {
-                Command::new(command)
-                    .args(options)
-                    .status()
-                    .expect("command failed to start");
-            }
-        }
+    if tree.v.is_empty() {
+        return;
     }
+
+    if tree.v == "." {
+        builtin::dot();
+    } else if tree.v == "alias" {
+    } else if tree.v == "break" {
+    } else if tree.v == "cd" {
+    } else if tree.v == "continue" {
+    } else if tree.v == "exec" {
+    } else if tree.v == "exit" {
+    } else if tree.v == "export" {
+    } else if tree.v == "return" {
+    } else {
+//        if options.is_empty() {
+//            Command::new(command)
+//                .status()
+//                .expect("command failed to start");
+//        } else {
+//            Command::new(command)
+//               .args(options)
+//               .status()
+//               .expect("command failed to start");
+//        }
+    }      
 }
-*/
+

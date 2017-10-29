@@ -1,13 +1,13 @@
-use std::env;
-use std::path::Path;
-use std::process;
+//use std::env;
+//use std::path::Path;
+//use std::process;
 
-use tongue::config::Config;
+//use tongue::config::Config;
 
 pub fn dot() {
 
 }
-
+/*
 pub fn alias(tokens: Vec<String>, mut config: &mut Config) {
     if let Some((command, options)) = tokens.split_first() {
         if options.is_empty() {
@@ -62,3 +62,4 @@ pub fn export() {
 pub fn _return() {
 
 }
+*/
