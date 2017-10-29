@@ -150,6 +150,19 @@ fn parse_three_token() {
         assert_eq!(got, expected);
     }
 
+    {
+        let config = &mut Config {
+            aliases: HashMap::new(),
+            home: "HOME".to_string(),
+        };
+        let expected: Vec<String> = vec![
+            "PS1".to_string(),
+            "=".to_string(),
+            ">".to_string(),
+        ];
+        let got = parse("PS1 = \">\"", &config);
+        assert_eq!(got, expected);
+    }
 }
 
 #[test]
