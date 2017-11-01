@@ -12,8 +12,15 @@ use tongue::builtin;
 use tongue::config::Config;
 use tongue::node::Node;
 
-pub fn exec(command: String, options: Vec<String>, mut config: &mut Config) {
-
+pub fn exec(command: &str, options: Vec<String>, mut config: &mut Config) {
+    match command {
+        "cd" => {
+            builtin::cd(options);
+        },
+        _ => {
+            println!("command not found");
+        },
+    }
 }
 
 pub fn eval(tree: Node, mut config: &mut Config) {
@@ -30,7 +37,7 @@ pub fn eval(tree: Node, mut config: &mut Config) {
                     break;
                 },
                 None => {
-                    exec("cd".to_string(), options
+                    exec("cd", options, config);
                     break;
                 }
             }
