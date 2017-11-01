@@ -2,25 +2,20 @@ use std::fmt;
 
 pub struct Node {
     pub v: String,
-    pub l: Option<Box<Node>>,
-    pub r: Option<Box<Node>>,
+    pub child: Vec<Node>,
+    pub next: Option<Box<Node>>,
 }
 
 impl Node {
     pub fn insert(&mut self, v: &str) {
 
-        match self.r {
-            Some(ref mut n) => {
-                n.insert(v);
-            },
-            None => {
-                self.r = Some(Box::new(Node {
-                    v: v.to_string(),
-                    l: None,
-                    r: None
-                }));
-            }
-        }
+        let n = Node {
+            v: v.to_string(),
+            child: Vec::new(),
+            next: None,
+        };
+
+        self.next = Some(Box::new(n));
     }
 }
 

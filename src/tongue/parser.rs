@@ -4,8 +4,8 @@ pub fn parse (mut tokens: Vec<String>) -> Node {
 
     let mut root = Node {
         v: "".to_string(),
-        l: None,
-        r: None
+        child: Vec::new(),
+        next: None,
     };
 
     match tokens.first() {
@@ -30,8 +30,8 @@ pub fn parse (mut tokens: Vec<String>) -> Node {
 fn parse_empty() {
     let expected = Node {
         v: "".to_string(),
-        l: None,
-        r: None
+        child: Vec:new(),
+        next: None,
     };
     let got = parse(vec![]);
     assert_eq!(got, expected);
@@ -42,8 +42,8 @@ fn parse_one_token() {
     {
         let expected = Node {
             v: "cd".to_string(),
-            l: None,
-            r: None
+            child: Vec::new(),
+            next: None,
         };
         let got = parse(vec!["cd".to_string()]);
         assert_eq!(got, expected);
@@ -54,13 +54,13 @@ fn parse_one_token() {
 fn parse_two_token() {
     let mut expected = Node {
         v: "ls".to_string(),
-        l: None,
-        r: None,
+        child: Vec::new(),
+        next: None,
     };
     let node = Some(Box::new(Node {
         v: "-l".to_string(),
-        l: None,
-        r: None,
+        child: Vec::new(),
+        next: None,
     }));
     expected.r = node;
 }
@@ -69,8 +69,7 @@ fn parse_two_token() {
 fn parse_three_token() {
     let expected = Node {
         v: "".to_string(),
-        l: None,
-        r: None
+        child: Vec::new(),
+        next: None,
     };
-    
 }
