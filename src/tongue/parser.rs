@@ -33,11 +33,18 @@ fn insert(mut root: Node, v: &str) -> Node {
         sibling: None,
     };
 
-    if v == "=" {
-        n.child.push(root);
-        root = n;
-    } else {
-        root.child.push(n);
+    match v {
+        "=" => {
+            n.child.push(root);
+            root = n;
+        },
+        "+" => {
+            n.child.push(root);
+            root = n;
+        },
+        _ => {
+            root.child.push(n);
+        }
     }
     root
 }
@@ -112,3 +119,47 @@ fn parse_three_token() {
     assert_eq!(got, expected);
 }
 
+#[test]
+fn parse_formula() {
+    {
+        let mut expected = Node {
+            v: "+".to_string(),
+            child: Vec::new(),
+            sibling: None,
+        };
+        let node01 = Node {
+            v: "1".to_string(),
+            child: Vec::new(),
+           sibling: None,
+        };
+        let node02 = Node {
+            v: "2".to_string(),
+            child: Vec::new(),
+            sibling: None,
+        };
+        expected.child.push(node01);
+        expected.child.push(node02);
+        let got = parse(vec![
+            "1".to_string(),
+            "+".to_string(),
+            "2".to_string()
+        ]);
+        assert_eq!(got, expected);
+    }
+    {
+        let mut expected = Node {
+            v: "=".to_string(),
+            child: Vec::new(),
+            sibling: None,
+        };
+        let got = parse(vec![
+            "x".to_string(),
+            "=".to_string(),
+            "1".to_string(),
+            "+".to_string(),
+            "2".to_string()
+        ]);
+        assert_eq!(got, expected);
+        
+    }
+}

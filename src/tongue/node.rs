@@ -36,6 +36,14 @@ impl PartialEq for Node {
 
 impl fmt::Debug for Node {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Node {}", self.v)
+        let mut s: String = String::from("");
+        s.push_str("Value: ");
+        s.push_str(&self.v);
+        s.push_str(", ");
+        s.push_str("Childs: ");
+        let l: String = self.child.len().to_string();
+        s.push_str(&l);
+
+        write!(f, "{}", s)
     }
 }
