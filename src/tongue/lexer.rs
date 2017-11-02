@@ -1,6 +1,4 @@
-use tongue::config::Config;
-
-pub fn tokenize(input: &str, config: &Config) -> Vec<String> {
+pub fn tokenize(input: &str) -> Vec<String> {
     debug!("{}", input);
     
     let mut token: String = String::from("");
@@ -64,7 +62,9 @@ pub fn tokenize(input: &str, config: &Config) -> Vec<String> {
                         }
                         break;
                     },
-                    _ => token.push(c),
+                    _ => {
+                        token.push(c);
+                    }
                 }
             },
             None => {
@@ -82,104 +82,66 @@ pub fn tokenize(input: &str, config: &Config) -> Vec<String> {
 
 #[test]
 fn tokenize_empty() {
-    use std::collections::HashMap;
-
-    let config = &mut Config {
-        aliases: HashMap::new(),
-        home : "HOME".to_string(),
-    };
     let expected: Vec<String> = Vec::new();
-    let got = tokenize("", &config);
+    let got = tokenize("");
     assert_eq!(got, expected);
 }
 
 #[test]
 fn tokenize_one_token() {
-    use std::collections::HashMap;
-
     {
-        let config = &mut Config {
-            aliases: HashMap::new(),
-            home : "HOME".to_string(),
-        };
         let expected: Vec<String> = vec!["cd".to_string()];
-        let got = tokenize("cd", &config);
+        let got = tokenize("cd");
         assert_eq!(got, expected);
     }
 
     {
-        let config = &mut Config {
-            aliases: HashMap::new(),
-            home : "HOME".to_string(),
-        };
         let expected: Vec<String> = vec!["ls".to_string()];
-        let got = tokenize("ls\n", &config);
+        let got = tokenize("ls\n");
         assert_eq!(got, expected);
     }
 }
 
 #[test]
 fn tokenize_two_token() {
-    use std::collections::HashMap;
-
-    let config = &mut Config {
-        aliases: HashMap::new(),
-        home : "HOME".to_string(),
-    };
     let expected: Vec<String> = vec!["cd".to_string(), "directory".to_string()];
-    let got = tokenize("cd directory", &config);
+    let got = tokenize("cd directory");
     assert_eq!(got, expected);
 }
 
 #[test]
 fn tokenize_three_token() {
-    use std::collections::HashMap;
-
     {
-        let config = &mut Config {
-            aliases: HashMap::new(),
-            home : "HOME".to_string(),
-        };
         let expected: Vec<String> = vec![
             "ls".to_string(),
             "-l".to_string(),
             "directory".to_string(),
         ];
-        let got = tokenize("ls -l directory", &config);
+        let got = tokenize("ls -l directory");
         assert_eq!(got, expected);
     }
 
     {
-        let config = &mut Config {
-            aliases: HashMap::new(),
-            home: "HOME".to_string(),
-        };
         let expected: Vec<String> = vec![
             "PS1".to_string(),
             "=".to_string(),
             ">".to_string(),
         ];
-        let got = tokenize("PS1 = \">\"", &config);
+        let got = tokenize("PS1 = \">\"");
         assert_eq!(got, expected);
     }
 }
 
 #[test]
 fn tokenize_four_token() {
-    use std::collections::HashMap;
-
     {
-        let config = &mut Config {
-            aliases: HashMap::new(),
-            home : "HOME".to_string(),
-        };
         let expected: Vec<String> = vec![
             "alias".to_string(),
             "emacs".to_string(),
             "=".to_string(),
             "emacs -nw".to_string()
         ];
-        let got = tokenize("alias emacs = \"emacs -nw\"", &config);
+        let got = tokenize("alias emacs = \"emacs -nw\"");
         assert_eq!(got, expected);
     }
 }

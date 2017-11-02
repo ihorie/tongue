@@ -12,66 +12,65 @@ use tongue::builtin;
 use tongue::config::Config;
 use tongue::node::Node;
 
-pub fn exec(command: &str, options: Vec<String>, mut config: &mut Config) {
-    match command {
-        "cd" => {
-            builtin::cd(options);
-        },
-        _ => {
-            println!("command not found");
-        },
-    }
-}
-
-pub fn eval(tree: Node, mut config: &mut Config) {
+pub fn eval(tree: Node, config: &mut Config) {
     if tree.v.is_empty() {
         return;
     }
 
-    let mut current_node: Node = tree;
-    let mut options: Vec<String> = Vec::new();
-    loop {
-        if current_node.child.is_empty() {
-            match current_node.next {
-                Some(n) => {
-                    break;
-                },
-                None => {
-                    exec("cd", options, config);
-                    break;
-                }
-            }
-        } else {
-            
-        }
-        break;
-    }
-
-    
-//    if tree.v == "." {
-//        builtin::dot();
-//    } else if tree.v == "alias" {
-//    } else if tree.v == "break" {
-//    } else if tree.v == "cd" {
-//        let options: Vec<String> = Vec::new();
-//        builtin::cd(options);
-//        
-//    } else if tree.v == "continue" {
-//    } else if tree.v == "exec" {
-//    } else if tree.v == "exit" {
-//    } else if tree.v == "export" {
-//    } else if tree.v == "return" {
-//    } else {
-//        if options.is_empty() {
-//            Command::new(command)
-//                .status()
-//                .expect("command failed to start");
-//        } else {
-//            Command::new(command)
-//               .args(options)
-//               .status()
-//               .expect("command failed to start");
-//        }
-//    }      
+    _eval(tree, config);
 }
 
+fn _eval(mut current_node: Node, config: &mut Config) {
+    let mut command: String = "".to_string();
+    let mut tokens: Vec<String> = Vec::new();
+    
+    loop {
+        if current_node.child.is_empty() {
+            match current_node.sibling {
+                Some(n) => {
+                    tokens.push(current_node.v.to_string());
+                    current_node = *n;
+                },
+                None => {
+                    command = current_node.v;
+                    break;
+                },
+            }
+        } else {
+            match current_node.child.pop() {
+                Some(n) => {
+                    _eval(n, config);
+                },
+                None => {
+                    break;
+                },
+            }
+        }
+    }
+
+    if tokens.is_empty() {
+        exec(&command, tokens, config);    
+    } else if tokens.len() == 1 {
+    }
+
+}
+
+fn exec(command: &str, options: Vec<String>, config: &mut Config) {
+    match command {
+
+        "alias" => {
+            builtin::alias(options, config);
+        },
+        "cd" => {
+            builtin::cd(options);
+        },
+        "ls" => {
+            Command::new(command)
+                .args(options)
+                .status()
+                .expect("command not found");
+        },
+        _ => {
+        },
+    }
+}

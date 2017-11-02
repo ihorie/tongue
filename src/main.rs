@@ -16,13 +16,15 @@ fn main() {
 }
 
 fn tongue_main() {
-    let mut config = &mut Config {
+    let config = &mut Config {
         aliases: HashMap::new(),
-        home : match env::var("HOME") {
-            Ok(home) => home,
-            Err(e) => e.to_string(),
-        },
+        home: String::new(),
     };
+
+    match env::var("HOME") {
+        Ok(home) => config.home = home,
+        Err(e) => config.home = e.to_string(),
+    }
 
     for argument in env::args() {
         if argument == "--help" {
@@ -39,7 +41,6 @@ fn tongue_main() {
     read_from_stdin(config);
 }
 
-
 fn read_rc(config: &mut Config) {
     read_from_file("/.tonguerc".to_string(), config);
 }
@@ -48,7 +49,7 @@ fn read_from_file(path: String, config: &mut Config) {
     let file = File::open(config.home.clone() + &path).expect("file not found");
     let reader = BufReader::new(file);
     for buf in reader.lines() {
-        let tokens = lexer::tokenize(&buf.expect("Failed to read file"), &config);
+        let tokens = lexer::tokenize(&buf.expect("Failed to read file"));
         let tree = parser::parse(tokens.clone());
         evaluator::eval(tree, config);
         io::stdout().flush().unwrap();
@@ -57,7 +58,15 @@ fn read_from_file(path: String, config: &mut Config) {
 
 fn read_from_stdin(config: &mut Config) {
     loop {
-        print!(" ¥ ");
+        let ps1: String;
+        match env::var("PS1") {
+            Ok(val) => ps1 = val,
+            Err(e) => {
+                println!("{}", e.to_string());
+                ps1 = " $ ".to_string();
+            }
+        }
+        print!("{}", ps1);
         io::stdout().flush().unwrap();
         let mut buf = String::new();
         io::stdin().read_line(&mut buf).expect("Failed to read line");
@@ -65,7 +74,7 @@ fn read_from_stdin(config: &mut Config) {
             println!("");
             exit(0);
         }
-        let tokens = lexer::tokenize(&buf, &config);
+        let tokens = lexer::tokenize(&buf);
         let tree =  parser::parse(tokens.clone());
         evaluator::eval(tree, config);
         io::stdout().flush().unwrap();
