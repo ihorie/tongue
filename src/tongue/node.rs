@@ -1,5 +1,6 @@
 use std::fmt;
 
+#[derive(Clone)]
 pub struct Node {
     pub v: String,
     pub child: Vec<Node>,

@@ -43,15 +43,25 @@ fn insert(mut root: Node, v: &str) -> Node {
             root = n;
         },
         "+" => {
-            match root.v {
-                _ => {
-                },
-            };
-            n.child.push(root);
-            root = n;
+            if root.v == "=" {
+                let tmp = root.clone();
+                match tmp.l {
+                    Some(l) => {
+                      root.l = Some(Box::new(insert(*l, v)));
+                    },
+                    None => {
+                      // should be ERRROR!
+                    },
+                }    
+            } else {
+                n.l == Some(Box::new(root));
+                root = n;
+            }
         },
         _ => {
-            root.child.push(n);
+            if root.l == None {
+            } else if root.r == None {
+            }
         }
     }
     root
@@ -142,7 +152,41 @@ fn parse_three_token() {
 }
 
 #[test]
+fn parse_plus() {
+    let mut expected = Node {
+        v: "+".to_string(),
+        child: Vec::new(),
+        l: None,
+        r: None,
+        sibling: None,
+    };
+    let node01 = Node {
+        v: "1".to_string(),
+        child: Vec::new(),
+        l: None,
+        r: None,
+        sibling: None,
+    };
+    let node02 = Node {
+        v: "2".to_string(),
+        child: Vec::new(),
+        l: None,
+        r: None,
+        sibling: None,
+    };
+    expected.l = Some(Box::new(node01));
+    expected.r = Some(Box::new(node02));
+    let got = parse(vec![
+        "1".to_string(),
+        "+".to_string(),
+        "2".to_string()
+    ]);
+    assert_eq!(got, expected);
+}
+
+#[test]
 fn parse_formula() {
+ /*
     {
         let mut expected = Node {
             v: "+".to_string(),
@@ -165,7 +209,7 @@ fn parse_formula() {
             r: None,
             sibling: None,
         };
-        expected.l = node01);
+        expected.l = Some(Box::new(node01));
         expected.child.push(node02);
         let got = parse(vec![
             "1".to_string(),
@@ -174,6 +218,7 @@ fn parse_formula() {
         ]);
         assert_eq!(got, expected);
     }
+*/
     {
         let mut expected = Node {
             v: "=".to_string(),

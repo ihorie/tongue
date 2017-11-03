@@ -1,5 +1,5 @@
 pub fn tokenize(input: &str) -> Vec<String> {
-    debug!("{}", input);
+//    debug!("{}", input);
     
     let mut token: String = String::from("");
     
