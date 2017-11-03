@@ -3,6 +3,8 @@ use std::fmt;
 pub struct Node {
     pub v: String,
     pub child: Vec<Node>,
+    pub l: Option<Box<Node>>,
+    pub r: Option<Box<Node>>,
     pub sibling: Option<Box<Node>>,
 }
 

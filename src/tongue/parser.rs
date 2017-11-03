@@ -5,6 +5,8 @@ pub fn parse (mut tokens: Vec<String>) -> Node {
     let mut root = Node {
         v: "".to_string(),
         child: Vec::new(),
+        l: None,
+        r: None,
         sibling: None,
     };
 
@@ -30,15 +32,21 @@ fn insert(mut root: Node, v: &str) -> Node {
     let mut n = Node {
         v: v.to_string(),
         child: Vec::new(),
+        l: None,
+        r: None,
         sibling: None,
     };
 
     match v {
         "=" => {
-            n.child.push(root);
+            n.l = Some(Box::new(root));
             root = n;
         },
         "+" => {
+            match root.v {
+                _ => {
+                },
+            };
             n.child.push(root);
             root = n;
         },
@@ -54,6 +62,8 @@ fn parse_empty() {
     let expected = Node {
         v: "".to_string(),
         child: Vec::new(),
+        l: None,
+        r: None,
         sibling: None,
     };
     let got = parse(vec![]);
@@ -67,6 +77,8 @@ fn parse_one_token() {
         let expected = Node {
             v: "cd".to_string(),
             child: Vec::new(),
+            l: None,
+            r: None,
             sibling: None,
         };
         let got = parse(vec!["cd".to_string()]);
@@ -79,11 +91,15 @@ fn parse_two_token() {
     let mut expected = Node {
         v: "ls".to_string(),
         child: Vec::new(),
+        l: None,
+        r: None,
         sibling: None,
     };
     let node = Node {
         v: "-l".to_string(),
         child: Vec::new(),
+        l: None,
+        r: None,
         sibling: None,
     };
     expected.child.push(node);
@@ -97,16 +113,22 @@ fn parse_three_token() {
     let mut expected = Node {
         v: "=".to_string(),
         child: Vec::new(),
+        l: None,
+        r: None,
         sibling: None,
     };
     let node01 = Node {
         v: "ps1".to_string(),
         child: Vec::new(),
+        l: None,
+        r: None,
         sibling: None,
     };
     let node02 = Node {
         v: "' $ '".to_string(),
         child: Vec::new(),
+        l: None,
+        r: None,
         sibling: None,
     };
     expected.child.push(node01);
@@ -125,19 +147,25 @@ fn parse_formula() {
         let mut expected = Node {
             v: "+".to_string(),
             child: Vec::new(),
+            l: None,
+            r: None,
             sibling: None,
         };
         let node01 = Node {
             v: "1".to_string(),
             child: Vec::new(),
+            l: None,
+            r: None,
            sibling: None,
         };
         let node02 = Node {
             v: "2".to_string(),
             child: Vec::new(),
+            l: None,
+            r: None,
             sibling: None,
         };
-        expected.child.push(node01);
+        expected.l = node01);
         expected.child.push(node02);
         let got = parse(vec![
             "1".to_string(),
@@ -150,6 +178,8 @@ fn parse_formula() {
         let mut expected = Node {
             v: "=".to_string(),
             child: Vec::new(),
+            l: None,
+            r: None,
             sibling: None,
         };
         let got = parse(vec![
@@ -160,6 +190,5 @@ fn parse_formula() {
             "2".to_string()
         ]);
         assert_eq!(got, expected);
-        
     }
 }
