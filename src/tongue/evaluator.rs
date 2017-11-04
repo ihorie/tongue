@@ -21,56 +21,45 @@ pub fn eval(tree: Node, config: &mut Config) {
 }
 
 fn _eval(mut current_node: Node, config: &mut Config) {
-    let mut command: String = "".to_string();
-    let mut tokens: Vec<String> = Vec::new();
+    if current_node.v == "ls" {
+        exec(current_node, config);
+    }
     
-    loop {
-        if current_node.options.is_empty() {
-            match current_node.sibling {
-                Some(n) => {
-                    tokens.push(current_node.v.to_string());
-                    current_node = *n;
-                },
-                None => {
-                    command = current_node.v;
-                    break;
-                },
-            }
-        } else {
-            match current_node.options.pop() {
-                Some(n) => {
-                    _eval(n, config);
-                },
-                None => {
-                    break;
-                },
-            }
-        }
-    }
-
-    if tokens.is_empty() {
-        exec(&command, tokens, config);    
-    } else if tokens.len() == 1 {
-    }
+//    loop {
+//        if current_node.options.is_empty() {
+//            match current_node.sibling {
+//                Some(n) => {
+//                    tokens.push(current_node.v.to_string());
+//                    current_node = *n;
+//                },
+//                None => {
+//                    command = current_node.v;
+//                    break;
+//                },
+//            }
+//        } else {
+//            match current_node.options.pop() {
+//                Some(n) => {
+//                    _eval(n, config);
+//                },
+//                None => {
+//                    break;
+//                },
+//            }
+//        }
+//    }
 
 }
 
-fn exec(command: &str, options: Vec<String>, config: &mut Config) {
-    match command {
-
-        "alias" => {
-            builtin::alias(options, config);
-        },
-        "cd" => {
-            builtin::cd(options);
-        },
-        "ls" => {
-            Command::new(command)
-                .args(options)
-                .status()
-                .expect("command not found");
-        },
-        _ => {
-        },
+fn exec(n: Node, config: &mut Config) {
+    if n.v == "alias" {
+        builtin::alias(n.options, config);
+    } else if n.v == "cd" {
+        builtin::cd(n.options);
+    } else if n.v == "ls" {
+        Command::new(n.v)
+            .args(n.options)
+            .status()
+            .expect("command not found");
     }
 }

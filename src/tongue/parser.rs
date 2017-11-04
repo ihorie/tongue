@@ -76,7 +76,7 @@ fn insert(mut root: Node, v: &str) -> Node {
                     root.r = Some(Box::new(n));
                 }
             } else {
-                root.options.push(n);
+                root.options.push(v.to_string());
             }
         }
     }
@@ -127,7 +127,7 @@ fn parse_command_with_args() {
         r: None,
         sibling: None,
     };
-    expected.options.push(node);
+    expected.options.push("-l".to_string());
     let got = parse(vec!["ls".to_string(), "-l".to_string()]);
     assert_eq!(got, expected);
 }

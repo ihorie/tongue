@@ -11,7 +11,7 @@ use std::fmt;
 #[derive(Clone)]
 pub struct Node {
     pub v: String,
-    pub options: Vec<Node>,
+    pub options: Vec<String>,
     pub l: Option<Box<Node>>,
     pub r: Option<Box<Node>>,
     pub sibling: Option<Box<Node>>,
