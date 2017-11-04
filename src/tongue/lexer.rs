@@ -1,6 +1,7 @@
+// Copyright 2017 Issei Horie
+
 pub fn tokenize(input: &str) -> Vec<String> {
-//    debug!("{}", input);
-    
+
     let mut token: String = String::from("");
     
     let mut v: Vec<String> = Vec::new();
@@ -49,6 +50,14 @@ pub fn tokenize(input: &str) -> Vec<String> {
                         v.push(token);
                         token = String::from("");
                     },
+                    '+' => {
+                        if token.is_empty() == false {
+                            v.push(token);
+                        }
+                        token = String::from("+");
+                        v.push(token);
+                        token = String::from("");
+                    },                
                     '"' => {
                         if token.is_empty() == false {
                             v.push(token);
