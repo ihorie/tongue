@@ -11,7 +11,7 @@ use std::fmt;
 #[derive(Clone)]
 pub struct Node {
     pub v: String,
-    pub child: Vec<Node>,
+    pub options: Vec<Node>,
     pub l: Option<Box<Node>>,
     pub r: Option<Box<Node>>,
     pub sibling: Option<Box<Node>>,
@@ -48,11 +48,11 @@ impl PartialEq for Node {
             return false;
         }
 
-        if self.child.len() != other.child.len() {
+        if self.options.len() != other.options.len() {
             return false;
-        } else if self.child.len() > 0 {
-            for i in 0..self.child.len() {
-                assert_eq!(self.child[i], other.child[i]);
+        } else if self.options.len() > 0 {
+            for i in 0..self.options.len() {
+                assert_eq!(self.options[i], other.options[i]);
             }
         }
 

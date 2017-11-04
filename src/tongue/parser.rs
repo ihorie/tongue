@@ -6,7 +6,7 @@ pub fn parse (mut tokens: Vec<String>) -> Node {
 
     let mut root = Node {
         v: "".to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
@@ -33,7 +33,7 @@ pub fn parse (mut tokens: Vec<String>) -> Node {
 fn insert(mut root: Node, v: &str) -> Node {
     let mut n = Node {
         v: v.to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
@@ -71,17 +71,12 @@ fn insert(mut root: Node, v: &str) -> Node {
                         root.r = Some(Box::new(n));
                     },
                 }
-//                if root.r == None {                
-//                    root.r = Some(Box::new(n));
-//                } else {
-//                    root.r = Some(Box::new(insert(root.r, v)));
-//                }
             } else if root.v == "+" {
                 if root.r == None {                    
                     root.r = Some(Box::new(n));
                 }
             } else {
-                root.child.push(n);
+                root.options.push(n);
             }
         }
     }
@@ -92,7 +87,7 @@ fn insert(mut root: Node, v: &str) -> Node {
 fn parse_empty() {
     let expected = Node {
         v: "".to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
@@ -106,7 +101,7 @@ fn parse_command_without_args() {
     {
         let expected = Node {
             v: "cd".to_string(),
-            child: Vec::new(),
+            options: Vec::new(),
             l: None,
             r: None,
             sibling: None,
@@ -120,19 +115,19 @@ fn parse_command_without_args() {
 fn parse_command_with_args() {
     let mut expected = Node {
         v: "ls".to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
     };
     let node = Node {
         v: "-l".to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
     };
-    expected.child.push(node);
+    expected.options.push(node);
     let got = parse(vec!["ls".to_string(), "-l".to_string()]);
     assert_eq!(got, expected);
 }
@@ -141,21 +136,21 @@ fn parse_command_with_args() {
 fn parse_variable_binding() {
     let mut expected = Node {
         v: "=".to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
     };
     let node01 = Node {
         v: "ps1".to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
     };
     let node02 = Node {
         v: "' $ '".to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
@@ -174,21 +169,21 @@ fn parse_variable_binding() {
 fn parse_plus() {
     let mut expected = Node {
         v: "+".to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
     };
     let node01 = Node {
         v: "1".to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
     };
     let node02 = Node {
         v: "2".to_string(),
-        child: Vec::new(),
+        options: Vec::new(),
         l: None,
         r: None,
         sibling: None,
@@ -208,35 +203,35 @@ fn parse_formula() {
     {
         let mut expected = Node {
             v: "=".to_string(),
-            child: Vec::new(),
+            options: Vec::new(),
             l: None,
             r: None,
             sibling: None,
         };
         let node01 = Node {
             v: "x".to_string(),
-            child: Vec::new(),
+            options: Vec::new(),
             l: None,
             r: None,
             sibling: None,
         };
         let mut node02 = Node {
             v: "+".to_string(),
-            child: Vec::new(),
+            options: Vec::new(),
             l: None,
             r: None,
             sibling: None,
         };
         let node03 = Node {
             v: "1".to_string(),
-            child: Vec::new(),
+            options: Vec::new(),
             l: None,
             r: None,
             sibling: None,
         };
         let node04 = Node {
             v: "2".to_string(),
-            child: Vec::new(),
+            options: Vec::new(),
             l: None,
             r: None,
             sibling: None,

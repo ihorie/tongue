@@ -25,7 +25,7 @@ fn _eval(mut current_node: Node, config: &mut Config) {
     let mut tokens: Vec<String> = Vec::new();
     
     loop {
-        if current_node.child.is_empty() {
+        if current_node.options.is_empty() {
             match current_node.sibling {
                 Some(n) => {
                     tokens.push(current_node.v.to_string());
@@ -37,7 +37,7 @@ fn _eval(mut current_node: Node, config: &mut Config) {
                 },
             }
         } else {
-            match current_node.child.pop() {
+            match current_node.options.pop() {
                 Some(n) => {
                     _eval(n, config);
                 },
