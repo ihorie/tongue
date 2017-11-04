@@ -21,34 +21,12 @@ pub fn eval(tree: Node, config: &mut Config) {
 }
 
 fn _eval(mut current_node: Node, config: &mut Config) {
-    if current_node.v == "ls" {
+    if current_node.v == "alias" {
+    } else if current_node.v == "cd" {
         exec(current_node, config);
-    }
-    
-//    loop {
-//        if current_node.options.is_empty() {
-//            match current_node.sibling {
-//                Some(n) => {
-//                    tokens.push(current_node.v.to_string());
-//                    current_node = *n;
-//                },
-//                None => {
-//                    command = current_node.v;
-//                    break;
-//                },
-//            }
-//        } else {
-//            match current_node.options.pop() {
-//                Some(n) => {
-//                    _eval(n, config);
-//                },
-//                None => {
-//                    break;
-//                },
-//            }
-//        }
-//    }
-
+    } else if current_node.v == "ls" {
+        exec(current_node, config);
+    }    
 }
 
 fn exec(n: Node, config: &mut Config) {

@@ -62,7 +62,7 @@ fn read_from_stdin(config: &mut Config) {
         match env::var("PS1") {
             Ok(val) => ps1 = val,
             Err(e) => {
-                println!("{}", e.to_string());
+                //println!("{}", e.to_string());
                 ps1 = " $ ".to_string();
             }
         }
