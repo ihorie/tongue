@@ -22,6 +22,7 @@ pub fn eval(tree: Node, config: &mut Config) {
 
 fn _eval(mut current_node: Node, config: &mut Config) {
     if current_node.v == "alias" {
+        exec(current_node, config);
     } else if current_node.v == "cd" {
         exec(current_node, config);
     } else {
