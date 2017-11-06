@@ -24,9 +24,9 @@ fn _eval(mut current_node: Node, config: &mut Config) {
     if current_node.v == "alias" {
     } else if current_node.v == "cd" {
         exec(current_node, config);
-    } else if current_node.v == "ls" {
+    } else {
         exec(current_node, config);
-    }    
+    }
 }
 
 fn exec(n: Node, config: &mut Config) {
@@ -34,10 +34,16 @@ fn exec(n: Node, config: &mut Config) {
         builtin::alias(n.options, config);
     } else if n.v == "cd" {
         builtin::cd(n.options);
-    } else if n.v == "ls" {
-        Command::new(n.v)
+    } else {
+        match Command::new(n.v)
             .args(n.options)
             .status()
-            .expect("command not found");
+        {
+            Ok(n) => {},
+            Err(err) => {
+                println!("{}", err);
+            },
+        }
+
     }
 }
