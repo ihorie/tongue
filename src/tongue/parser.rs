@@ -1,4 +1,10 @@
 // Copyright 2017 Issei Horie
+//
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at you
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
 
 use tongue::node::Node;
 
@@ -30,7 +36,7 @@ pub fn parse (mut tokens: Vec<String>) -> Node {
     root
 }
 
-fn insert(mut root: Node, v: &str) -> Node {
+fn insert (mut root: Node, v: &str) -> Node {
     let mut n = Node {
         v: v.to_string(),
         options: Vec::new(),

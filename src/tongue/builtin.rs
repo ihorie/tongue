@@ -9,8 +9,8 @@ use tongue::config::Config;
 //
 pub fn alias(options: Vec<String>, config: &mut Config) {
     if options.is_empty() {
-        for key in config.aliases.keys() {
-            match config.aliases.get(key) {
+        for key in config.aliase.keys() {
+            match config.aliase.get(key) {
                 Some(val) => {
                     println!("{} -> {}", key, val);
                 },

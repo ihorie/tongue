@@ -21,7 +21,7 @@ pub struct Node {
 //}
 
 impl PartialEq for Node {
-    fn eq(&self, other: &Node) -> bool {
+    fn eq (&self, other: &Node) -> bool {
         if self.v != other.v {
             return false;
         }

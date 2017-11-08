@@ -20,13 +20,30 @@ pub fn eval(tree: Node, config: &mut Config) {
     _eval(tree, config);
 }
 
-fn _eval(mut current_node: Node, config: &mut Config) {
-    if current_node.v == "alias" {
-        exec(current_node, config);
-    } else if current_node.v == "cd" {
-        exec(current_node, config);
+fn _eval(mut n: Node, config: &mut Config) {
+    if n.v == "=" {
+//        config.variable.insert("ps1", " # ");
+        match n.l {
+            Some(l) => {
+                match n.r {
+                    Some(r) => {
+                        config.variable.insert(l.v, r.v);
+                    },
+                    None => {
+                        // should be error!!
+                    },
+                }
+            },
+            None => {
+                // should be error!!
+            },
+        }
+    } else if n.v == "alias" {
+        exec(n, config);
+    } else if n.v == "cd" {
+        exec(n, config);
     } else {
-        exec(current_node, config);
+        exec(n, config);
     }
 }
 
