@@ -19,7 +19,19 @@ use tongue::parser;
 use tongue::evaluator;
 use tongue::config::Config;
 
+extern "C" {
+    fn signal(sig: u32, cb: extern fn(u32)) -> fn(u32);
+}
+
+extern fn interrupt(_:u32) {
+
+}
+
 fn main() {
+    unsafe {
+        signal(2, interrupt);
+    }
+    
     tongue_main();
 }
 
