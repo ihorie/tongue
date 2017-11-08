@@ -1,6 +1,6 @@
 [package]
 name = "tongue"
-version = "0.0.9"
+version = "0.1.0"
 authors = [ "Issei Horie <horie7188@gmail.com>" ]
 license = "MIT/Apache-2.0"
 description = """
