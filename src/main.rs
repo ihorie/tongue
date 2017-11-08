@@ -79,15 +79,6 @@ fn read_from_file(path: String, config: &mut Config) {
 
 fn read_from_stdin(config: &mut Config) {
     loop {
-//        let ps1: String;
-//        match env::var("PS1") {
-//            Ok(val) => ps1 = val,
-//            Err(e) => {
-//                //println!("{}", e.to_string());
-//                ps1 = " $ ".to_string();
-//            }
-//        }
-//        print!("{}", ps1);
         match config.variable.get("ps1") {
             Some(ps1) => print!("{}", ps1),
             None => print!(" $ "),
