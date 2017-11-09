@@ -24,7 +24,6 @@ extern "C" {
 }
 
 extern fn interrupt(_:u32) {
-
 }
 
 fn main() {
@@ -79,11 +78,7 @@ fn read_from_file(path: String, config: &mut Config) {
 
 fn read_from_stdin(config: &mut Config) {
     loop {
-        match config.variable.get("ps1") {
-            Some(ps1) => print!("{}", ps1),
-            None => print!(" $ "),
-        }
-
+        prompt(config);
         io::stdout().flush().unwrap();
         let mut buf = String::new();
         io::stdin().read_line(&mut buf).expect("Failed to read line");
@@ -95,5 +90,12 @@ fn read_from_stdin(config: &mut Config) {
         let tree =  parser::parse(tokens.clone());
         evaluator::eval(tree, config);
         io::stdout().flush().unwrap();
+    }
+}
+
+fn prompt(config: &mut Config) {
+    match config.variable.get("ps1") {
+        Some(ps1) => print!("{}", ps1),
+        None => print!(" $ "),
     }
 }
