@@ -1,0 +1,2 @@
+class Tongue < Formula
+end
