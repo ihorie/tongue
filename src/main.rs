@@ -6,34 +6,68 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+extern crate libc;
 extern crate tongue;
 
-use std::io::{self, Write, BufReader, BufRead};
+use std::io::{self, Write, BufWriter, Read, BufReader, BufRead};
+use std::{mem, env};
 use std::process::exit;
-use std::env;
 use std::fs::File;
 use std::collections::HashMap;
 
-use tongue::lexer;
-use tongue::parser;
-use tongue::evaluator;
+use tongue::{lexer, parser, evaluator};
 use tongue::config::Config;
 
-extern "C" {
-    fn signal(sig: u32, cb: extern fn(u32)) -> fn(u32);
+fn tcgetattr() -> libc::termios {
+    let mut term: libc::termios;
+    unsafe {
+        term = mem::zeroed();
+        libc::tcgetattr(libc::STDIN_FILENO, &mut term);
+    }
+    term
 }
 
-extern fn interrupt(_:u32) {
+fn tcsetattr(mut term: libc::termios) {
+    unsafe {
+        libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &mut term);
+    }
+}
+
+fn enable_raw_mode() {
+    unsafe {
+        let mut term: libc::termios = mem::zeroed();
+        libc::tcgetattr(libc::STDIN_FILENO, &mut term);
+        term.c_lflag &= !(libc::ECHO | libc::ICANON | libc::ISIG);
+        libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &mut term);
+    }
 }
 
 fn main() {
-    unsafe {
-        signal(2, interrupt);
-    }
-    
     tongue_main();
 }
 
+fn tongue_main() {
+    let mut orig_term = tcgetattr();
+    enable_raw_mode();
+    loop {
+        let stdin = io::stdin();
+        let mut handle = stdin.lock();
+        let mut buffer = [0; 1];
+        handle.read(&mut buffer);
+        let c = buffer[0] as char;
+        match buffer[0] {
+            4 => {
+                tcsetattr(orig_term);
+                exit(1);
+            },
+            _ => {
+                println!("{} -> {:?}", c, buffer);
+            }
+        }
+    }
+}
+
+/*
 fn tongue_main() {
     let config = &mut Config {
         aliase: HashMap::new(),
@@ -99,3 +133,4 @@ fn prompt(config: &mut Config) {
         None => print!(" $ "),
     }
 }
+*/
