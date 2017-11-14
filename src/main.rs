@@ -37,7 +37,12 @@ fn enable_raw_mode() {
     unsafe {
         let mut term: libc::termios = mem::zeroed();
         libc::tcgetattr(libc::STDIN_FILENO, &mut term);
-        term.c_lflag &= !(libc::ECHO | libc::ICANON | libc::ISIG);
+        term.c_iflag &= !(libc::BRKINT | libc::ICRNL | libc::INPCK | libc::ISTRIP | libc::IXON);
+        term.c_oflag &= !(libc::OPOST);
+        term.c_cflag |= (libc::CS8);
+        term.c_lflag &= !(libc::ECHO | libc::ICANON | libc::IEXTEN | libc::ISIG);
+        //term.c_cc[libc::VMIN] = 0;
+        //term.c_cc[libc::VTIME] = 1;
         libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &mut term);
     }
 }
@@ -61,7 +66,12 @@ fn tongue_main() {
                 exit(1);
             },
             _ => {
-                println!("{} -> {:?}", c, buffer);
+                //println!("{} -> {:?}", c, buffer);
+                //print!("{}\r\n", c);
+                //print!("{}", c);
+                let stdout = io::stdout();
+                let mut handle = stdout.lock();
+                handle.write_all(&buffer);
             }
         }
     }
