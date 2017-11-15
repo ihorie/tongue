@@ -66,12 +66,10 @@ fn tongue_main() {
                 exit(1);
             },
             _ => {
-                //println!("{} -> {:?}", c, buffer);
-                //print!("{}\r\n", c);
-                //print!("{}", c);
                 let stdout = io::stdout();
-                let mut handle = stdout.lock();
-                handle.write_all(&buffer);
+                let mut buf = BufWriter::new(stdout.lock());
+                buf.write(&buffer);
+                buf.flush();
             }
         }
     }
