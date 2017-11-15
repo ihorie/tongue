@@ -18,6 +18,9 @@ use std::collections::HashMap;
 use tongue::{lexer, parser, evaluator};
 use tongue::config::Config;
 
+
+/*** terminal settings ***/
+
 fn tcgetattr() -> libc::termios {
     let mut term: libc::termios;
     unsafe {
@@ -47,9 +50,34 @@ fn enable_raw_mode() {
     }
 }
 
-fn main() {
-    tongue_main();
+/*** output ***/
+fn output(buffer: &mut [u8]) -> bool {
+    let c = buffer[0] as char;
+    match buffer[0] {
+        4 => {
+            // Ctrl + D
+            return false;
+        },
+        13 => {
+            // new line
+            let stdout = io::stdout();
+            let mut buf_writer = BufWriter::new(stdout.lock());
+            buf_writer.write(b"\r\n");
+            buf_writer.flush();
+        }
+        _ => {
+            // others
+            let stdout = io::stdout();
+            let mut buf_writer = BufWriter::new(stdout.lock());
+            buf_writer.write(&buffer);
+            buf_writer.flush();
+        },
+    }
+    true
 }
+
+
+/*** main ***/
 
 fn tongue_main() {
     let mut orig_term = tcgetattr();
@@ -59,20 +87,15 @@ fn tongue_main() {
         let mut handle = stdin.lock();
         let mut buffer = [0; 1];
         handle.read(&mut buffer);
-        let c = buffer[0] as char;
-        match buffer[0] {
-            4 => {
-                tcsetattr(orig_term);
-                exit(1);
-            },
-            _ => {
-                let stdout = io::stdout();
-                let mut buf = BufWriter::new(stdout.lock());
-                buf.write(&buffer);
-                buf.flush();
-            }
+        if output(&mut buffer) == false {
+            tcsetattr(orig_term);
+            exit(1);
         }
     }
+}
+
+fn main() {
+    tongue_main();
 }
 
 /*
