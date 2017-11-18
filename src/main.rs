@@ -50,48 +50,62 @@ fn enable_raw_mode() {
     }
 }
 
-/*** output ***/
-fn output(buffer: &mut [u8]) -> bool {
-    let c = buffer[0] as char;
-    match buffer[0] {
-        4 => {
-            // Ctrl + D
-            return false;
-        },
-        13 => {
-            // new line
-            let stdout = io::stdout();
-            let mut buf_writer = BufWriter::new(stdout.lock());
-            buf_writer.write(b"\r\n");
-            buf_writer.flush();
-        }
-        _ => {
-            // others
-            let stdout = io::stdout();
-            let mut buf_writer = BufWriter::new(stdout.lock());
-            buf_writer.write(&buffer);
-            buf_writer.flush();
-        },
-    }
-    true
+fn tokenize() {
 }
 
+/** input ***/
+
+fn read_stdin() {
+    let mut line = "".to_string();
+    loop {
+        let stdin = io::stdin();
+        let mut handle = stdin.lock();
+        let mut buffer = [0; 1];
+        handle.read(&mut buffer);
+        let c = buffer[0] as char;
+        match buffer[0] {
+            4 => {
+                // Ctrl + D
+                break;
+            },
+            13 => {
+                // new line
+                let stdout = io::stdout();
+                let mut buf_writer = BufWriter::new(stdout.lock());
+                buf_writer.write(b"\r\n");
+                buf_writer.flush();
+                tokenize();
+            },
+            21 => {
+                // Ctrl + U
+                let stdout = io::stdout();
+                let mut buf_writer = BufWriter::new(stdout.lock());
+                buf_writer.write(b"\x1b[K");
+                buf_writer.flush();
+            },
+            127 => {
+                // Backspace
+            },
+            _ => {
+                // others
+                //print!("{} -> {:?}\r\n", c, buffer);
+                let stdout = io::stdout();
+                let mut buf_writer = BufWriter::new(stdout.lock());
+                buf_writer.write(&buffer);
+                buf_writer.flush();
+                line.push(c);
+            },
+        }
+    }
+}
 
 /*** main ***/
 
 fn tongue_main() {
     let mut orig_term = tcgetattr();
     enable_raw_mode();
-    loop {
-        let stdin = io::stdin();
-        let mut handle = stdin.lock();
-        let mut buffer = [0; 1];
-        handle.read(&mut buffer);
-        if output(&mut buffer) == false {
-            tcsetattr(orig_term);
-            exit(1);
-        }
-    }
+    read_stdin();
+    tcsetattr(orig_term);
 }
 
 fn main() {
