@@ -10,7 +10,7 @@ extern crate libc;
 extern crate tongue;
 
 use std::io::{self, Write, BufWriter, Read, BufReader, BufRead};
-use std::{mem, env};
+use std::{mem, env, str};
 use std::process::exit;
 use std::fs::File;
 use std::collections::HashMap;
@@ -50,51 +50,110 @@ fn enable_raw_mode() {
     }
 }
 
+struct CursorPosition {
+    x: usize,
+    y: usize,
+}
+
+fn get_cursor_position() -> CursorPosition {
+    let mut buf =  [0; 32];
+    output("\x1b[6n");
+    read_input(&mut buf);
+    let buf = str::from_utf8(&buf[2 .. 32]).unwrap();
+    let index_end = buf.find('R').unwrap();
+    let index_middle = buf.find(';').unwrap();
+    
+    let cursor_position = CursorPosition {
+        y: buf.get(0..index_middle)
+            .unwrap()
+            .parse::<usize>()
+            .unwrap(),
+        x: buf.get(index_middle+1..index_end)
+            .unwrap()
+            .parse::<usize>()
+            .unwrap(),
+    };
+
+    cursor_position
+}
+
 fn tokenize() {
 }
 
-/** input ***/
+/*** output ***/
+
+fn output(s: &str) {
+    let stdout = io::stdout();
+    let mut buf_writer = BufWriter::new(stdout.lock());
+    buf_writer.write(s.as_bytes());
+    buf_writer.flush();
+}
+
+/*** input ***/
+
+const CtrlB: u8 = 2;
+const CtrlD: u8 = 4;
+const CtrlF: u8 = 6;
+const Tab: u8 = 9;
+const Enter: u8 = 13;
+const CtrlU: u8 = 21;
+const Escape: u8 = 27;
+const Backspace: u8 = 127;
+
+fn read_input(mut buffer: &mut [u8]) {
+    let stdin = io::stdin();
+    let mut handle = stdin.lock();
+    handle.read(&mut buffer);
+}
 
 fn read_stdin() {
     let mut line = "".to_string();
     loop {
-        let stdin = io::stdin();
-        let mut handle = stdin.lock();
-        let mut buffer = [0; 1];
-        handle.read(&mut buffer);
+        let mut buffer = [0; 4];
+        read_input(&mut buffer);
         let c = buffer[0] as char;
+        let stdout = io::stdout();
+        let mut buf_writer = BufWriter::new(stdout.lock());
         match buffer[0] {
-            4 => {
-                // Ctrl + D
+            CtrlB => {
+                output("\x1b[D");
+            }
+            CtrlD => {
                 break;
-            },
-            13 => {
-                // new line
-                let stdout = io::stdout();
-                let mut buf_writer = BufWriter::new(stdout.lock());
-                buf_writer.write(b"\r\n");
-                buf_writer.flush();
+            }
+            CtrlF => {
+                output("\x1b[C");
+            }
+            Tab => {
+            }
+            Enter => {
+                output("\r\n");
+                line = "".to_string();
                 tokenize();
-            },
-            21 => {
-                // Ctrl + U
-                let stdout = io::stdout();
-                let mut buf_writer = BufWriter::new(stdout.lock());
-                buf_writer.write(b"\x1b[K");
-                buf_writer.flush();
-            },
-            127 => {
-                // Backspace
-            },
+            }
+            CtrlU => {
+                output("\x1b[0K");
+                line = "".to_string();
+            }
+            Escape => {
+                ;
+            }
+            Backspace => {
+                let cursor_position = get_cursor_position();
+                output(format!("\x1b[{};0H", cursor_position.y).as_str());
+                output("\x1b[0K");
+                line.remove(cursor_position.x-2);
+                output(line.as_str());
+                output(format!("\x1b[{};{}H", cursor_position.y, cursor_position.x-1).as_str());
+            }
             _ => {
-                // others
-                //print!("{} -> {:?}\r\n", c, buffer);
-                let stdout = io::stdout();
-                let mut buf_writer = BufWriter::new(stdout.lock());
-                buf_writer.write(&buffer);
-                buf_writer.flush();
-                line.push(c);
-            },
+                let cursor_position = get_cursor_position();
+                output(format!("\x1b[{};0H", cursor_position.y).as_str());
+                output("\x1b[0K");
+                line.insert(cursor_position.x-1, c);
+                output(line.as_str());
+                output(format!("\x1b[{};{}H", cursor_position.y, cursor_position.x+1).as_str());
+            }
         }
     }
 }
