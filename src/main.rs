@@ -21,6 +21,20 @@ use tongue::config::Config;
 
 /*** terminal settings ***/
 
+extern "C" {
+  fn signal(sig: u32, cb: extern fn(u32)) -> fn(u32);
+}
+
+extern fn interrupt(_:u32) {
+}
+
+fn disable_sigint() {
+    let SIGINT = 2;
+    unsafe {
+        signal(SIGINT, interrupt);
+    }
+}
+
 fn tcgetattr() -> libc::termios {
     let mut term: libc::termios;
     unsafe {
@@ -58,7 +72,7 @@ struct CursorPosition {
 fn get_cursor_position() -> CursorPosition {
     let mut buf =  [0; 32];
     output("\x1b[6n");
-    read_input(&mut buf);
+    read_stdin(&mut buf);
     let buf = str::from_utf8(&buf[2 .. 32]).unwrap();
     let index_end = buf.find('R').unwrap();
     let index_middle = buf.find(';').unwrap();
@@ -77,9 +91,6 @@ fn get_cursor_position() -> CursorPosition {
     cursor_position
 }
 
-fn tokenize() {
-}
-
 /*** output ***/
 
 fn output(s: &str) {
@@ -91,45 +102,72 @@ fn output(s: &str) {
 
 /*** input ***/
 
-const CtrlB: u8 = 2;
-const CtrlD: u8 = 4;
-const CtrlF: u8 = 6;
-const Tab: u8 = 9;
-const Enter: u8 = 13;
-const CtrlU: u8 = 21;
-const Escape: u8 = 27;
+const CtrlB:     u8 = 2;
+const CtrlC:     u8 = 3;
+const CtrlD:     u8 = 4;
+const CtrlF:     u8 = 6;
+const Tab:       u8 = 9;
+const Enter:     u8 = 13;
+const CtrlU:     u8 = 21;
+const Escape:    u8 = 27;
 const Backspace: u8 = 127;
 
-fn read_input(mut buffer: &mut [u8]) {
+fn read_stdin(mut buffer: &mut [u8]) {
     let stdin = io::stdin();
     let mut handle = stdin.lock();
     handle.read(&mut buffer);
 }
 
-fn read_stdin() {
+fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
     let mut line = "".to_string();
+    let ps1 = " $ ";
+    output(ps1);
     loop {
         let mut buffer = [0; 4];
-        read_input(&mut buffer);
+        read_stdin(&mut buffer);
         let c = buffer[0] as char;
         let stdout = io::stdout();
         let mut buf_writer = BufWriter::new(stdout.lock());
         match buffer[0] {
             CtrlB => {
+                if line.len() == 0 {
+                    continue;
+                }
+                let cursor_position = get_cursor_position();
+                if cursor_position.x == ps1.len() {
+                    continue;
+                }
                 output("\x1b[D");
             }
+            CtrlC => {
+            }
             CtrlD => {
-                break;
+                if line.len() == 0 {
+                    output("\r\n");
+                    break;
+                }
             }
             CtrlF => {
+                if line.len() == 0 {
+                    continue;
+                }
+                let cursor_position = get_cursor_position();
+                if cursor_position.x == ps1.len() {
+                    continue;
+                }
                 output("\x1b[C");
             }
             Tab => {
             }
             Enter => {
                 output("\r\n");
+                tcsetattr(orig_term);
+                let tokens = lexer::tokenize(line.as_str());
+                let tree = parser::parse(tokens.clone());
+                evaluator::eval(tree, config);
+                enable_raw_mode();
                 line = "".to_string();
-                tokenize();
+                output(ps1);
             }
             CtrlU => {
                 output("\x1b[0K");
@@ -139,10 +177,14 @@ fn read_stdin() {
                 ;
             }
             Backspace => {
+                if line.len() == 0 {
+                    continue;
+                }
                 let cursor_position = get_cursor_position();
                 output(format!("\x1b[{};0H", cursor_position.y).as_str());
                 output("\x1b[0K");
-                line.remove(cursor_position.x-2);
+                output(ps1);
+                line.remove(cursor_position.x-2-ps1.len());
                 output(line.as_str());
                 output(format!("\x1b[{};{}H", cursor_position.y, cursor_position.x-1).as_str());
             }
@@ -150,7 +192,8 @@ fn read_stdin() {
                 let cursor_position = get_cursor_position();
                 output(format!("\x1b[{};0H", cursor_position.y).as_str());
                 output("\x1b[0K");
-                line.insert(cursor_position.x-1, c);
+                output(ps1);
+                line.insert(cursor_position.x-1-ps1.len(), c);
                 output(line.as_str());
                 output(format!("\x1b[{};{}H", cursor_position.y, cursor_position.x+1).as_str());
             }
@@ -158,12 +201,37 @@ fn read_stdin() {
     }
 }
 
+fn read_rc(config: &mut Config) {
+}
+
 /*** main ***/
 
 fn tongue_main() {
-    let mut orig_term = tcgetattr();
+    disable_sigint();
+    let orig_term = tcgetattr();
     enable_raw_mode();
-    read_stdin();
+    let config = &mut Config {
+        aliase: HashMap::new(),
+        variable: HashMap::new(),
+        home: String::new(),
+    };
+    match env::var("HOME") {
+        Ok(home) => config.home = home,
+        Err(e) => config.home = e.to_string(),
+    }
+    for argument in env::args() {
+        if argument == "--help" {
+            print!("tongue [option]\r\n");
+            tcsetattr(orig_term);
+            exit(0);
+        } else if argument == "--version" {
+            print!("{}", env!("CARGO_PKG_VERSION"));
+            tcsetattr(orig_term);
+            exit(0);
+        }
+    }
+    read_rc(config);
+    read_from_stdin(config, orig_term);
     tcsetattr(orig_term);
 }
 
@@ -172,33 +240,6 @@ fn main() {
 }
 
 /*
-fn tongue_main() {
-    let config = &mut Config {
-        aliase: HashMap::new(),
-        variable: HashMap::new(),
-        home: String::new(),
-    };
-
-    match env::var("HOME") {
-        Ok(home) => config.home = home,
-        Err(e) => config.home = e.to_string(),
-    }
-
-    for argument in env::args() {
-        if argument == "--help" {
-            println!("tongue [option]");
-            exit(0);
-        } else if argument == "--version" {
-            println!("{}", env!("CARGO_PKG_VERSION"));
-            exit(0);
-        }
-    }
-
-    read_rc(config);
-
-    read_from_stdin(config);
-}
-
 fn read_rc(config: &mut Config) {
     read_from_file("/.tonguerc".to_string(), config);
 }
