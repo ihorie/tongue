@@ -102,15 +102,15 @@ fn output(s: &str) {
 
 /*** input ***/
 
-const CtrlB:     u8 = 2;
-const CtrlC:     u8 = 3;
-const CtrlD:     u8 = 4;
-const CtrlF:     u8 = 6;
-const Tab:       u8 = 9;
-const Enter:     u8 = 13;
-const CtrlU:     u8 = 21;
-const Escape:    u8 = 27;
-const Backspace: u8 = 127;
+const CTRL_B:    u8 = 2;
+const CTRL_C:    u8 = 3;
+const CTRL_D:    u8 = 4;
+const CTRL_F:    u8 = 6;
+const TAB:       u8 = 9;
+const ENTER:     u8 = 13;
+const CTRL_U:    u8 = 21;
+const ESCAPE:    u8 = 27;
+const BACKSPACE: u8 = 127;
 
 fn read_stdin(mut buffer: &mut [u8]) {
     let stdin = io::stdin();
@@ -129,7 +129,7 @@ fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
         let stdout = io::stdout();
         let mut buf_writer = BufWriter::new(stdout.lock());
         match buffer[0] {
-            CtrlB => {
+            CTRL_B => {
                 if line.len() == 0 {
                     continue;
                 }
@@ -139,15 +139,15 @@ fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
                 }
                 output("\x1b[D");
             }
-            CtrlC => {
+            CTRL_C => {
             }
-            CtrlD => {
+            CTRL_D => {
                 if line.len() == 0 {
                     output("\r\n");
                     break;
                 }
             }
-            CtrlF => {
+            CTRL_F => {
                 if line.len() == 0 {
                     continue;
                 }
@@ -157,9 +157,9 @@ fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
                 }
                 output("\x1b[C");
             }
-            Tab => {
+            TAB => {
             }
-            Enter => {
+            ENTER => {
                 output("\r\n");
                 tcsetattr(orig_term);
                 let tokens = lexer::tokenize(line.as_str());
@@ -169,14 +169,14 @@ fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
                 line = "".to_string();
                 output(ps1);
             }
-            CtrlU => {
+            CTRL_U => {
                 output("\x1b[0K");
                 line = "".to_string();
             }
-            Escape => {
+            ESCAPE => {
                 ;
             }
-            Backspace => {
+            BACKSPACE => {
                 if line.len() == 0 {
                     continue;
                 }
@@ -238,44 +238,3 @@ fn tongue_main() {
 fn main() {
     tongue_main();
 }
-
-/*
-fn read_rc(config: &mut Config) {
-    read_from_file("/.tonguerc".to_string(), config);
-}
-
-fn read_from_file(path: String, config: &mut Config) {
-    let file = File::open(config.home.clone() + &path).expect("file not found");
-    let reader = BufReader::new(file);
-    for buf in reader.lines() {
-        let tokens = lexer::tokenize(&buf.expect("Failed to read file"));
-        let tree = parser::parse(tokens.clone());
-        evaluator::eval(tree, config);
-        io::stdout().flush().unwrap();
-    }
-}
-
-fn read_from_stdin(config: &mut Config) {
-    loop {
-        prompt(config);
-        io::stdout().flush().unwrap();
-        let mut buf = String::new();
-        io::stdin().read_line(&mut buf).expect("Failed to read line");
-        if "".eq(&buf) {
-            println!("");
-            exit(0);
-        }
-        let tokens = lexer::tokenize(&buf);
-        let tree =  parser::parse(tokens.clone());
-        evaluator::eval(tree, config);
-        io::stdout().flush().unwrap();
-    }
-}
-
-fn prompt(config: &mut Config) {
-    match config.variable.get("ps1") {
-        Some(ps1) => print!("{}", ps1),
-        None => print!(" $ "),
-    }
-}
-*/
