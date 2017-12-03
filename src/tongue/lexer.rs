@@ -1,13 +1,16 @@
 // Copyright 2017 Issei Horie
+//
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
 
 pub fn tokenize(input: &str) -> Vec<String> {
 
-    let mut token: String = String::from("");
-    
+    let mut token: String = String::from("");    
     let mut v: Vec<String> = Vec::new();
-
     let mut chars = input.chars();
-
     let mut is_string = false;
     
     loop {
@@ -152,5 +155,14 @@ fn tokenize_four_token() {
         ];
         let got = tokenize("alias emacs = \"emacs -nw\"");
         assert_eq!(got, expected);
+    }
+    {
+        let expected: Vec<String> = vec![
+            "println".to_string(),
+            "(".to_string(),
+            "Hello, World!".to_string(),
+            ")".to_string(),
+        ];
+        let got = tokenize("println(\"Hello, World!\")");
     }
 }

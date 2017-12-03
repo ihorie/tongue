@@ -16,7 +16,7 @@ exclude = [
 
 [dependencies]
 libc = "0.2"
-#log = "0.3"
+log = "0.3"
 
 [[bin]]
 path = "src/main.rs"

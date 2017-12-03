@@ -15,9 +15,8 @@ use std::process::exit;
 use std::fs::File;
 use std::collections::HashMap;
 
-use tongue::{lexer, parser, evaluator};
+use tongue::{lexer, parser, evaluator, util};
 use tongue::config::Config;
-
 
 /*** terminal settings ***/
 
@@ -71,8 +70,8 @@ struct CursorPosition {
 
 fn get_cursor_position() -> CursorPosition {
     let mut buf =  [0; 32];
-    output("\x1b[6n");
-    read_stdin(&mut buf);
+    util::stdout("\x1b[6n");
+    util::stdin(&mut buf);
     let buf = str::from_utf8(&buf[2 .. 32]).unwrap();
     let index_end = buf.find('R').unwrap();
     let index_middle = buf.find(';').unwrap();
@@ -91,15 +90,6 @@ fn get_cursor_position() -> CursorPosition {
     cursor_position
 }
 
-/*** output ***/
-
-fn output(s: &str) {
-    let stdout = io::stdout();
-    let mut buf_writer = BufWriter::new(stdout.lock());
-    buf_writer.write(s.as_bytes());
-    buf_writer.flush();
-}
-
 /*** input ***/
 
 const CTRL_B:    u8 = 2;
@@ -112,19 +102,13 @@ const CTRL_U:    u8 = 21;
 const ESCAPE:    u8 = 27;
 const BACKSPACE: u8 = 127;
 
-fn read_stdin(mut buffer: &mut [u8]) {
-    let stdin = io::stdin();
-    let mut handle = stdin.lock();
-    handle.read(&mut buffer);
-}
-
 fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
     let mut line = "".to_string();
     let ps1 = " $ ";
-    output(ps1);
+    util::stdout(ps1);
     loop {
         let mut buffer = [0; 4];
-        read_stdin(&mut buffer);
+        util::stdin(&mut buffer);
         let c = buffer[0] as char;
         let stdout = io::stdout();
         let mut buf_writer = BufWriter::new(stdout.lock());
@@ -137,13 +121,13 @@ fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
                 if cursor_position.x == ps1.len() {
                     continue;
                 }
-                output("\x1b[D");
+                util::stdout("\x1b[D");
             }
             CTRL_C => {
             }
             CTRL_D => {
                 if line.len() == 0 {
-                    output("\r\n");
+                    util::stdout("\r\n");
                     break;
                 }
             }
@@ -155,22 +139,23 @@ fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
                 if cursor_position.x == ps1.len() {
                     continue;
                 }
-                output("\x1b[C");
+                util::stdout("\x1b[C");
             }
             TAB => {
+                
             }
             ENTER => {
-                output("\r\n");
+                util::stdout("\r\n");
                 tcsetattr(orig_term);
                 let tokens = lexer::tokenize(line.as_str());
                 let tree = parser::parse(tokens.clone());
                 evaluator::eval(tree, config);
                 enable_raw_mode();
                 line = "".to_string();
-                output(ps1);
+                util::stdout(ps1);
             }
             CTRL_U => {
-                output("\x1b[0K");
+                util::stdout("\x1b[0K");
                 line = "".to_string();
             }
             ESCAPE => {
@@ -181,21 +166,21 @@ fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
                     continue;
                 }
                 let cursor_position = get_cursor_position();
-                output(format!("\x1b[{};0H", cursor_position.y).as_str());
-                output("\x1b[0K");
-                output(ps1);
+                util::stdout(format!("\x1b[{};0H", cursor_position.y).as_str());
+                util::stdout("\x1b[0K");
+                util::stdout(ps1);
                 line.remove(cursor_position.x-2-ps1.len());
-                output(line.as_str());
-                output(format!("\x1b[{};{}H", cursor_position.y, cursor_position.x-1).as_str());
+                util::stdout(line.as_str());
+                util::stdout(format!("\x1b[{};{}H", cursor_position.y, cursor_position.x-1).as_str());
             }
             _ => {
                 let cursor_position = get_cursor_position();
-                output(format!("\x1b[{};0H", cursor_position.y).as_str());
-                output("\x1b[0K");
-                output(ps1);
+                util::stdout(format!("\x1b[{};0H", cursor_position.y).as_str());
+                util::stdout("\x1b[0K");
+                util::stdout(ps1);
                 line.insert(cursor_position.x-1-ps1.len(), c);
-                output(line.as_str());
-                output(format!("\x1b[{};{}H", cursor_position.y, cursor_position.x+1).as_str());
+                util::stdout(line.as_str());
+                util::stdout(format!("\x1b[{};{}H", cursor_position.y, cursor_position.x+1).as_str());
             }
         }
     }
