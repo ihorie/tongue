@@ -60,6 +60,7 @@ pub fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
                 let tree = parser::parse(tokens.clone());
                 evaluator::eval(tree, config);
                 terminal::enable_raw_mode();
+                config.history.push(line);
                 line = "".to_string();
                 util::stdout(ps1);
             }
@@ -68,7 +69,26 @@ pub fn read_from_stdin(config: &mut Config, orig_term: libc::termios) {
                 line = "".to_string();
             }
             ESCAPE => {
-                ;
+                if buffer[1] == 91 {
+                    if buffer[2] == 65 {
+                        // Up
+                        match config.history.pop() {
+                            Some(last_history) => {
+                                line = last_history;
+                                
+                            }
+                            _ => {
+                                line = "".to_string();
+                            }
+                        }
+                        let cursor_position = terminal::get_cursor_position();
+                        util::stdout(format!("\x1b[{};0H", cursor_position.y).as_str());
+                        util::stdout(ps1);
+                        util::stdout(line.as_str());
+                        let len = ps1.len() + line.len() + 1;
+                        util::stdout(format!("\x1b[{};{}H", cursor_position.y, len).as_str());
+                    }
+                }
             }
             BACKSPACE => {
                 if line.len() == 0 {

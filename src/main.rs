@@ -38,6 +38,7 @@ fn tongue_main() {
     let config = &mut Config {
         aliase: HashMap::new(),
         variable: HashMap::new(),
+        history: Vec::new(),
         home: String::new(),
     };
     match env::var("HOME") {
